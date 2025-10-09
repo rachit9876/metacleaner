@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Privacy-First WebP Cleaner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body class="dark-theme">
+<h2>Privacy-First WebP Cleaner</h2>
+<p class="subtitle">Removes metadata, adds noise, and randomizes filenames for secure sharing</p>
+
+<div class="container">
+  <div class="row">
+    <input id="file" type="file" accept="image/*" multiple>
+    <div class="file-input-wrapper" onclick="document.getElementById('file').click()">
+      Choose Images
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-group">
+      <label>Quality <span id="qval">0.90</span></label>
+      <input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.90">
+    </div>
+
+    <div class="control-group">
+      <label>Noise Level <span id="nval">0.5</span></label>
+      <input id="noise" type="range" min="0" max="3" step="0.1" value="0.5">
+    </div>
+
+    <div class="control-group">
+      <label>Max Width (px)</label>
+      <input id="maxw" type="number" min="1" placeholder="Original size">
+    </div>
+
+    <div class="control-group">
+      <label>Tight crop (2px)</label>
+      <div class="toggle" id="autocrop"><div class="toggle-slider"></div></div>
+    </div>
+    
+    <div class="control-group">
+      <label>Randomize filename</label>
+      <div class="toggle active" id="randomize"><div class="toggle-slider"></div></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <button id="convert">Download</button>
+    <button id="previewBtn">Convert</button>
+    <button id="bulkConvert" style="display:none">Bulk Convert</button>
+    <button id="bulkDownload" style="display:none">Bulk Download ZIP</button>
+  </div>
+</div>
+
+<div id="images-container" class="images-container"></div>
+
+<div id="processed-images-container" class="images-container" style="display:none">
+  <h3>Processed Images</h3>
+</div>
+
+
+
+<div class="security-note">
+  <h3>Privacy Protection Features</h3>
+  <ul>
+    <li><strong>EXIF/GPS Removal:</strong> All camera and location data completely stripped</li>
+    <li><strong>Filename Randomization:</strong> Prevents identification through naming patterns</li>
+    <li><strong>Pixel Noise:</strong> Subtle alterations to break perceptual hash matching</li>
+    <li><strong>No Server Upload:</strong> All processing happens locally in your browser</li>
+  </ul>
+  <p><strong>For maximum anonymity:</strong> Use with Tor/VPN and consider additional resizing.</p>
+</div>
+
+<canvas id="c" style="display:none"></canvas>
+
+<script>
+const fileEl = document.getElementById('file');
+const convertBtn = document.getElementById('convert');
+const previewBtn = document.getElementById('previewBtn');
+
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+// Controls
+const qualityEl = document.getElementById('quality');
+const qval = document.getElementById('qval');
+const noiseEl = document.getElementById('noise');
+const nval = document.getElementById('nval');
+const maxwEl = document.getElementById('maxw');
+const autocropEl = document.getElementById('autocrop');
+const randomizeEl = document.getElementById('randomize');
+
+// Metadata elements
+const origFileName = document.getElementById('orig-file-name');
+const origFileSize = document.getElementById('orig-file-size');
+const origFileType = document.getElementById('orig-file-type');
+const origDimensions = document.getElementById('orig-dimensions');
+const origHasExif = document.getElementById('orig-has-exif');
+
+const procFileName = document.getElementById('proc-file-name');
+const procFileSize = document.getElementById('proc-file-size');
+const procFileType = document.getElementById('proc-file-type');
+const procDimensions = document.getElementById('proc-dimensions');
+
+// Update value displays
+qval.textContent = qualityEl.value;
+qualityEl.oninput = () => qval.textContent = qualityEl.value;
+nval.textContent = noiseEl.value;
+noiseEl.oninput = () => nval.textContent = noiseEl.value;
+
+let currentFiles = [];
+let currentFile = null;
+
+// Toggle functionality
+autocropEl.addEventListener('click', () => {
+  autocropEl.classList.toggle('active');
+});
+
+randomizeEl.addEventListener('click', () => {
+  randomizeEl.classList.toggle('active');
+});
+
+// Event listeners
+fileEl.addEventListener('change', e => {
+  const files = Array.from(e.target.files);
+  if (files.length > 0) {
+    // If we already have files, merge with new ones
+    if (currentFiles.length > 0) {
+      currentFiles = [...currentFiles, ...files];
+    } else {
+      currentFiles = files;
+      currentFile = files[0];
+    }
+    displayImages(currentFiles);
+    if (currentFiles.length === 1) {
+      displayOriginalMetadata(currentFiles[0]);
+    }
+  }
+});
+
+
+
+// Page-wide drag and drop with animation
+document.addEventListener('dragover', e => {
+  e.preventDefault();
+  document.body.classList.add('drag-over');
+});
+
+document.addEventListener('dragleave', e => {
+  if (!e.relatedTarget) {
+    document.body.classList.remove('drag-over');
+  }
+});
+
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  document.body.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (files.length > 0) {
+    // If we already have files, merge with new ones
+    if (currentFiles.length > 0) {
+      currentFiles = [...currentFiles, ...files];
+    } else {
+      currentFiles = files;
+      currentFile = files[0];
+    }
+    displayImages(currentFiles);
+    if (currentFiles.length === 1) {
+      displayOriginalMetadata(currentFiles[0]);
+    }
+  } else if (e.dataTransfer.files.length > 0) {
+    alert('Please drop only image files.');
+  }
+});
+
+// Clipboard paste
+document.addEventListener('paste', e => {
+  const items = e.clipboardData.items;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      const f = items[i].getAsFile();
+      // If we already have files, add to existing array
+      if (currentFiles.length > 0) {
+        currentFiles = [...currentFiles, f];
+      } else {
+        currentFiles = [f];
+        currentFile = f;
+      }
+      displayImages(currentFiles);
+      if (currentFiles.length === 1) {
+        displayOriginalMetadata(f);
+      }
+      break;
+    }
+  }
+});
+
+// Display original file metadata
+function displayOriginalMetadata(file) {
+  origFileName.textContent = file.name;
+  origFileSize.textContent = formatFileSize(file.size);
+  origFileType.textContent = file.type || 'Unknown';
+  
+  // Check for EXIF data
+  const img = new Image();
+  img.onload = function() {
+    origDimensions.textContent = `${img.width} × ${img.height} px`;
+    
+    // Simple check for EXIF presence (not perfect but better than nothing)
+    const hasExif = file.size > 1024 && file.type === 'image/jpeg';
+    origHasExif.textContent = hasExif ? 'Likely' : 'Unlikely';
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+// Format file size
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Update display after file selection
+function displayImages(files) {
+  const container = document.getElementById('images-container');
+  container.innerHTML = '';
+  
+  files.forEach((file, index) => {
+    const imageBox = document.createElement('div');
+    imageBox.className = 'image-box';
+    imageBox.innerHTML = `
+      <div class="image-preview">
+        <img class="preview-image" alt="${file.name}">
+        <div class="image-info">
+          <span class="image-name">${file.name}</span>
+          <span class="image-size">${formatFileSize(file.size)}</span>
+        </div>
+      </div>
+    `;
+    
+    const img = imageBox.querySelector('img');
+    const url = URL.createObjectURL(file);
+    img.src = url;
+    img.onload = () => URL.revokeObjectURL(url);
+    
+    container.appendChild(imageBox);
+  });
+  
+  updateBulkButton();
+}
+
+// Display processed images
+function displayProcessedImages(results) {
+  const container = document.getElementById('processed-images-container');
+  container.innerHTML = '<h3>Processed Images</h3><div class="processed-images-grid"></div>';
+  container.style.display = 'block';
+  
+  const grid = container.querySelector('.processed-images-grid');
+  
+  results.forEach((result, index) => {
+    const imageBox = document.createElement('div');
+    imageBox.className = 'image-box processed';
+    imageBox.innerHTML = `
+      <div class="image-preview">
+        <img class="preview-image" alt="${result.filename}">
+        <div class="image-info">
+          <span class="image-name">${result.filename}</span>
+          <span class="image-size">${formatFileSize(result.blob.size)}</span>
+          <span class="processed-label">✓ Processed</span>
+        </div>
+      </div>
+    `;
+    
+    const img = imageBox.querySelector('img');
+    const url = URL.createObjectURL(result.blob);
+    img.src = url;
+    img.onload = () => URL.revokeObjectURL(url);
+    
+    grid.appendChild(imageBox);
+  });
+}
+
+// Load image
+function loadImage(url) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = rej;
+    img.src = url;
+  });
+}
+
+// Apply noise to image data
+function applyNoise(imageData, intensity) {
+  if (!intensity) return imageData;
+  const d = imageData.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const noise = (Math.random() * 2 - 1) * intensity;
+    d[i] = Math.max(0, Math.min(255, d[i] + noise));
+    d[i+1] = Math.max(0, Math.min(255, d[i+1] + noise));
+    d[i+2] = Math.max(0, Math.min(255, d[i+2] + noise));
+  }
+  return imageData;
+}
+
+// Process image and return blob
+async function processImage(file, opts) {
+  const url = URL.createObjectURL(file);
+  const img = await loadImage(url);
+  
+  // Calculate dimensions
+  let width = img.width;
+  let height = img.height;
+  if (opts.maxWidth && opts.maxWidth < width) {
+    const scale = opts.maxWidth / width;
+    width = Math.round(width * scale);
+    height = Math.round(height * scale);
+  }
+  
+  // Set canvas size
+  canvas.width = width;
+  canvas.height = height;
+  
+  // Draw image with optional crop
+  const inset = opts.autocrop ? 2 : 0;
+  ctx.drawImage(img, inset, inset, img.width - inset*2, img.height - inset*2, 0, 0, width, height);
+  
+  // Apply noise if needed
+  if (opts.noise > 0) {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    ctx.putImageData(applyNoise(imageData, opts.noise), 0, 0);
+  }
+  
+  // Create blob
+  const blob = await new Promise(resolve => {
+    canvas.toBlob(resolve, 'image/webp', opts.quality);
+  });
+  
+  URL.revokeObjectURL(url);
+  return { blob, width, height };
+}
+
+// Generate random 6-character filename
+function randomFilename() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result + '.webp';
+}
+
+// Show/hide buttons based on file count
+function updateBulkButton() {
+  const convertBtn = document.getElementById('convert');
+  const previewBtn = document.getElementById('previewBtn');
+  const bulkConvertBtn = document.getElementById('bulkConvert');
+  const bulkDownloadBtn = document.getElementById('bulkDownload');
+  
+  if (currentFiles.length > 1) {
+    // Multiple images: show bulk buttons, hide single buttons
+    convertBtn.style.display = 'none';
+    previewBtn.style.display = 'none';
+    bulkConvertBtn.style.display = 'inline-block';
+    bulkDownloadBtn.style.display = 'inline-block';
+  } else {
+    // Single image: show single buttons, hide bulk buttons
+    convertBtn.style.display = 'inline-block';
+    previewBtn.style.display = 'inline-block';
+    bulkConvertBtn.style.display = 'none';
+    bulkDownloadBtn.style.display = 'none';
+  }
+}
+
+let processedResults = [];
+
+let isProcessed = false;
+
+// Bulk convert button
+document.getElementById('bulkConvert').addEventListener('click', async () => {
+  if (currentFiles.length === 0) return;
+  
+  const bulkBtn = document.getElementById('bulkConvert');
+  bulkBtn.disabled = true;
+  bulkBtn.textContent = 'Processing...';
+  processedResults = [];
+  
+  try {
+    const opts = {
+      quality: parseFloat(qualityEl.value),
+      noise: parseFloat(noiseEl.value),
+      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
+      autocrop: autocropEl.classList.contains('active')
+    };
+    
+    for (let i = 0; i < currentFiles.length; i++) {
+      const file = currentFiles[i];
+      bulkBtn.textContent = `Processing ${i + 1}/${currentFiles.length}...`;
+      
+      const result = await processImage(file, opts);
+      const filename = randomizeEl.classList.contains('active') ? randomFilename() : `clean_${i + 1}.webp`;
+      
+      processedResults.push({
+        blob: result.blob,
+        filename: filename,
+        width: result.width,
+        height: result.height
+      });
+      
+
+    }
+    
+    // Display processed images
+    displayProcessedImages(processedResults);
+    
+  } catch (err) {
+    console.error(err);
+    alert('Error processing images: ' + err.message);
+  } finally {
+    bulkBtn.disabled = false;
+    bulkBtn.textContent = 'Bulk Convert';
+  }
+});
+
+// Bulk download ZIP button
+document.getElementById('bulkDownload').addEventListener('click', async () => {
+  if (processedResults.length === 0) {
+    alert('Please convert images first');
+    return;
+  }
+  
+  const downloadBtn = document.getElementById('bulkDownload');
+  downloadBtn.disabled = true;
+  downloadBtn.textContent = 'Creating ZIP...';
+  
+  try {
+    const zip = new JSZip();
+    
+    processedResults.forEach((result, index) => {
+      zip.file(result.filename, result.blob);
+    });
+    
+    const zipBlob = await zip.generateAsync({type: 'blob'});
+    const zipUrl = URL.createObjectURL(zipBlob);
+    
+    const a = document.createElement('a');
+    a.href = zipUrl;
+    a.download = 'processed_images.zip';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(zipUrl);
+    
+  } catch (err) {
+    console.error('Error creating ZIP:', err);
+    alert('Error creating ZIP file');
+  } finally {
+    downloadBtn.disabled = false;
+    downloadBtn.textContent = 'Bulk Download ZIP';
+  }
+});
+
+// Convert button
+convertBtn.addEventListener('click', async () => {
+  if (!currentFile) {
+    alert('Please select an image first');
+    return;
+  }
+  
+  convertBtn.disabled = true;
+  convertBtn.textContent = 'Processing...';
+  
+  try {
+    const opts = {
+      quality: parseFloat(qualityEl.value),
+      noise: parseFloat(noiseEl.value),
+      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
+      autocrop: autocropEl.classList.contains('active')
+    };
+    
+    const result = await processImage(currentFile, opts);
+    
+    // Set filename
+    const filename = randomizeEl.classList.contains('active') ? randomFilename() : 'clean.webp';
+    
+    // Create download link
+    const dlUrl = URL.createObjectURL(result.blob);
+    const a = document.createElement('a');
+    a.href = dlUrl;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(dlUrl);
+    
+    // Update processed metadata
+    procFileName.textContent = filename;
+    procFileSize.textContent = formatFileSize(result.blob.size);
+    procFileType.textContent = result.blob.type || 'image/webp';
+    procDimensions.textContent = `${result.width} × ${result.height} px`;
+    
+    // Display single processed image
+    displayProcessedImages([{
+      blob: result.blob,
+      filename: filename,
+      width: result.width,
+      height: result.height
+    }]);
+
+  } catch (err) {
+    console.error(err);
+    alert('Error processing image: ' + err.message);
+  } finally {
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Download';
+  }
+});
+
+// Preview button
+previewBtn.addEventListener('click', async () => {
+  if (!currentFile) {
+    alert('Please select an image first');
+    return;
+  }
+  
+  previewBtn.disabled = true;
+  previewBtn.textContent = 'Processing...';
+  
+  try {
+    const opts = {
+      quality: parseFloat(qualityEl.value),
+      noise: parseFloat(noiseEl.value),
+      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
+      autocrop: autocropEl.classList.contains('active')
+    };
+    
+    const result = await processImage(currentFile, opts);
+    const filename = randomizeEl.classList.contains('active') ? randomFilename() : 'preview.webp';
+    
+    // Update processed metadata
+    procFileName.textContent = filename;
+    procFileSize.textContent = formatFileSize(result.blob.size);
+    procFileType.textContent = result.blob.type || 'image/webp';
+    procDimensions.textContent = `${result.width} × ${result.height} px`;
+    
+    // Display single processed image preview
+    displayProcessedImages([{
+      blob: result.blob,
+      filename: filename,
+      width: result.width,
+      height: result.height
+    }]);
+    
+
+  } catch (err) {
+    console.error(err);
+    alert('Error processing image: ' + err.message);
+  } finally {
+    previewBtn.disabled = false;
+    previewBtn.textContent = 'Convert';
+  }
+});
+</script>
+</body>
+</html>
