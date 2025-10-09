@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Privacy-First WebP Cleaner</title>
+<title>Image Cleaner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
@@ -11,8 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body class="dark-theme">
-<h2>Privacy-First WebP Cleaner</h2>
-<p class="subtitle">Removes metadata, adds noise, and randomizes filenames for secure sharing</p>
+<h2>Image Cleaner</h2>
+<p class="subtitle">Removes metadata, adds noise, and randomizes filenames Image</p>
 
 <div class="container">
   <div class="row">
@@ -495,7 +495,7 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
     
     const a = document.createElement('a');
     a.href = zipUrl;
-    a.download = 'processed_images.zip';
+    a.download = 'metacleaner.zip';
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
