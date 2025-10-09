@@ -247,9 +247,8 @@ function displayImages(files) {
     `;
     
     const img = imageBox.querySelector('img');
-    const url = URL.createObjectURL(file);
+    const url = urlManager.create(file);
     img.src = url;
-    img.onload = () => URL.revokeObjectURL(url);
     
     container.appendChild(imageBox);
   });
@@ -280,9 +279,8 @@ function displayProcessedImages(results) {
     `;
     
     const img = imageBox.querySelector('img');
-    const url = URL.createObjectURL(result.blob);
+    const url = urlManager.create(result.blob);
     img.src = url;
-    img.onload = () => URL.revokeObjectURL(url);
     
     grid.appendChild(imageBox);
   });
@@ -384,10 +382,25 @@ let processedResults = [];
 
 let isProcessed = false;
 
+// URL manager to prevent memory leaks
+const urlManager = {
+  urls: new Set(),
+  create(blob) {
+    const url = URL.createObjectURL(blob);
+    this.urls.add(url);
+    return url;
+  },
+  cleanup() {
+    this.urls.forEach(url => URL.revokeObjectURL(url));
+    this.urls.clear();
+  }
+};
+
 // Bulk convert button
 document.getElementById('bulkConvert').addEventListener('click', async () => {
   if (currentFiles.length === 0) return;
   
+  urlManager.cleanup();
   const bulkBtn = document.getElementById('bulkConvert');
   bulkBtn.disabled = true;
   bulkBtn.textContent = 'Processing...';
@@ -476,6 +489,7 @@ convertBtn.addEventListener('click', async () => {
     return;
   }
   
+  urlManager.cleanup();
   convertBtn.disabled = true;
   convertBtn.textContent = 'Processing...';
   
@@ -533,6 +547,7 @@ previewBtn.addEventListener('click', async () => {
     return;
   }
   
+  urlManager.cleanup();
   previewBtn.disabled = true;
   previewBtn.textContent = 'Processing...';
   
