@@ -396,14 +396,14 @@ const urlManager = {
   }
 };
 
-// Bulk convert button
-document.getElementById('bulkConvert').addEventListener('click', async () => {
-  if (currentFiles.length === 0) return;
-  
+// Unified processing function
+async function processBulk(files, shouldDownload = false) {
   urlManager.cleanup();
-  const bulkBtn = document.getElementById('bulkConvert');
-  bulkBtn.disabled = true;
-  bulkBtn.textContent = 'Processing...';
+  const isSingle = files.length === 1;
+  const btn = isSingle ? (shouldDownload ? convertBtn : previewBtn) : document.getElementById('bulkConvert');
+  
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
   processedResults = [];
   
   try {
@@ -414,9 +414,9 @@ document.getElementById('bulkConvert').addEventListener('click', async () => {
       autocrop: autocropEl.classList.contains('active')
     };
     
-    for (let i = 0; i < currentFiles.length; i++) {
-      const file = currentFiles[i];
-      bulkBtn.textContent = `Processing ${i + 1}/${currentFiles.length}...`;
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!isSingle) btn.textContent = `Processing ${i + 1}/${files.length}...`;
       
       const result = await processImage(file, opts);
       const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${file.name.split('.')[0]}.webp`;
@@ -427,20 +427,36 @@ document.getElementById('bulkConvert').addEventListener('click', async () => {
         width: result.width,
         height: result.height
       });
-      
-
     }
     
-    // Display processed images
     displayProcessedImages(processedResults);
+    
+    if (isSingle && shouldDownload) {
+      const result = processedResults[0];
+      const dlUrl = URL.createObjectURL(result.blob);
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = result.filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(dlUrl);
+    }
     
   } catch (err) {
     console.error(err);
     alert('Error processing images: ' + err.message);
   } finally {
-    bulkBtn.disabled = false;
-    bulkBtn.textContent = 'Bulk Convert';
+    btn.disabled = false;
+    btn.textContent = isSingle ? (shouldDownload ? 'Download' : 'Convert') : 'Bulk Convert';
   }
+}
+
+// Bulk convert button
+document.getElementById('bulkConvert').addEventListener('click', async () => {
+  if (currentFiles.length === 0) return;
+  await processBulk(currentFiles);
 });
 
 // Bulk download ZIP button
@@ -482,108 +498,26 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
   }
 });
 
-// Convert button
+// Convert button - uses bulk processing for single file
 convertBtn.addEventListener('click', async () => {
   if (!currentFile) {
     alert('Please select an image first');
     return;
   }
   
-  urlManager.cleanup();
-  convertBtn.disabled = true;
-  convertBtn.textContent = 'Processing...';
-  
-  try {
-    const opts = {
-      quality: parseFloat(qualityEl.value),
-      noise: parseFloat(noiseEl.value),
-      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
-      autocrop: autocropEl.classList.contains('active')
-    };
-    
-    const result = await processImage(currentFile, opts);
-    
-    // Set filename
-    const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${currentFile.name.split('.')[0]}.webp`;
-    
-    // Create download link
-    const dlUrl = URL.createObjectURL(result.blob);
-    const a = document.createElement('a');
-    a.href = dlUrl;
-    a.download = filename;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(dlUrl);
-    
-    // Update processed metadata
-    procFileName.textContent = filename;
-    procFileSize.textContent = formatFileSize(result.blob.size);
-    procFileType.textContent = result.blob.type || 'image/webp';
-    procDimensions.textContent = `${result.width} × ${result.height} px`;
-    
-    // Display single processed image
-    displayProcessedImages([{
-      blob: result.blob,
-      filename: filename,
-      width: result.width,
-      height: result.height
-    }]);
-
-  } catch (err) {
-    console.error(err);
-    alert('Error processing image: ' + err.message);
-  } finally {
-    convertBtn.disabled = false;
-    convertBtn.textContent = 'Download';
-  }
+  // Process using bulk method
+  await processBulk([currentFile], true);
 });
 
-// Preview button
+// Preview button - uses bulk processing for single file
 previewBtn.addEventListener('click', async () => {
   if (!currentFile) {
     alert('Please select an image first');
     return;
   }
   
-  urlManager.cleanup();
-  previewBtn.disabled = true;
-  previewBtn.textContent = 'Processing...';
-  
-  try {
-    const opts = {
-      quality: parseFloat(qualityEl.value),
-      noise: parseFloat(noiseEl.value),
-      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
-      autocrop: autocropEl.classList.contains('active')
-    };
-    
-    const result = await processImage(currentFile, opts);
-    const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${currentFile.name.split('.')[0]}.webp`;
-    
-    // Update processed metadata
-    procFileName.textContent = filename;
-    procFileSize.textContent = formatFileSize(result.blob.size);
-    procFileType.textContent = result.blob.type || 'image/webp';
-    procDimensions.textContent = `${result.width} × ${result.height} px`;
-    
-    // Display single processed image preview
-    displayProcessedImages([{
-      blob: result.blob,
-      filename: filename,
-      width: result.width,
-      height: result.height
-    }]);
-    
-
-  } catch (err) {
-    console.error(err);
-    alert('Error processing image: ' + err.message);
-  } finally {
-    previewBtn.disabled = false;
-    previewBtn.textContent = 'Convert';
-  }
+  // Process using bulk method without download
+  await processBulk([currentFile], false);
 });
 </script>
 </body>
