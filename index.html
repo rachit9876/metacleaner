@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Privacy-First WebP Cleaner</title>
+<title>Image Cleaner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
@@ -11,8 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body class="dark-theme">
-<h2>Privacy-First WebP Cleaner</h2>
-<p class="subtitle">Removes metadata, adds noise, and randomizes filenames for secure sharing</p>
+<h2>Image Cleaner</h2>
+<p class="subtitle">Removes metadata, adds noise, and randomizes filenames Image</p>
 
 <div class="container">
   <div class="row">
@@ -22,10 +22,14 @@
     </div>
   </div>
 
-  <div class="controls">
+  <div class="row">
+    <button id="advancedBtn">Advanced</button>
+  </div>
+
+  <div class="controls collapsed">
     <div class="control-group">
-      <label>Quality <span id="qval">0.90</span></label>
-      <input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.90">
+      <label>Quality <span id="qval">0.80</span></label>
+      <input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.80">
     </div>
 
     <div class="control-group">
@@ -45,7 +49,7 @@
     
     <div class="control-group">
       <label>Randomize filename</label>
-      <div class="toggle active" id="randomize"><div class="toggle-slider"></div></div>
+      <div class="toggle" id="randomize"><div class="toggle-slider"></div></div>
     </div>
   </div>
 
@@ -95,6 +99,15 @@ const nval = document.getElementById('nval');
 const maxwEl = document.getElementById('maxw');
 const autocropEl = document.getElementById('autocrop');
 const randomizeEl = document.getElementById('randomize');
+const advancedBtn = document.getElementById('advancedBtn');
+const controlsEl = document.querySelector('.controls');
+
+// Advanced toggle
+advancedBtn.addEventListener('click', () => {
+  const isCollapsed = controlsEl.classList.contains('collapsed');
+  controlsEl.classList.toggle('collapsed');
+  advancedBtn.textContent = isCollapsed ? 'Hide Advanced' : 'Advanced';
+});
 
 // Metadata elements
 const origFileName = document.getElementById('orig-file-name');
@@ -247,9 +260,8 @@ function displayImages(files) {
     `;
     
     const img = imageBox.querySelector('img');
-    const url = URL.createObjectURL(file);
+    const url = urlManager.create(file);
     img.src = url;
-    img.onload = () => URL.revokeObjectURL(url);
     
     container.appendChild(imageBox);
   });
@@ -280,9 +292,8 @@ function displayProcessedImages(results) {
     `;
     
     const img = imageBox.querySelector('img');
-    const url = URL.createObjectURL(result.blob);
+    const url = urlManager.create(result.blob);
     img.src = url;
-    img.onload = () => URL.revokeObjectURL(url);
     
     grid.appendChild(imageBox);
   });
@@ -384,13 +395,28 @@ let processedResults = [];
 
 let isProcessed = false;
 
-// Bulk convert button
-document.getElementById('bulkConvert').addEventListener('click', async () => {
-  if (currentFiles.length === 0) return;
+// URL manager to prevent memory leaks
+const urlManager = {
+  urls: new Set(),
+  create(blob) {
+    const url = URL.createObjectURL(blob);
+    this.urls.add(url);
+    return url;
+  },
+  cleanup() {
+    this.urls.forEach(url => URL.revokeObjectURL(url));
+    this.urls.clear();
+  }
+};
+
+// Unified processing function
+async function processBulk(files, shouldDownload = false) {
+  urlManager.cleanup();
+  const isSingle = files.length === 1;
+  const btn = isSingle ? (shouldDownload ? convertBtn : previewBtn) : document.getElementById('bulkConvert');
   
-  const bulkBtn = document.getElementById('bulkConvert');
-  bulkBtn.disabled = true;
-  bulkBtn.textContent = 'Processing...';
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
   processedResults = [];
   
   try {
@@ -401,12 +427,12 @@ document.getElementById('bulkConvert').addEventListener('click', async () => {
       autocrop: autocropEl.classList.contains('active')
     };
     
-    for (let i = 0; i < currentFiles.length; i++) {
-      const file = currentFiles[i];
-      bulkBtn.textContent = `Processing ${i + 1}/${currentFiles.length}...`;
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!isSingle) btn.textContent = `Processing ${i + 1}/${files.length}...`;
       
       const result = await processImage(file, opts);
-      const filename = randomizeEl.classList.contains('active') ? randomFilename() : `clean_${i + 1}.webp`;
+      const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${file.name.split('.')[0]}.webp`;
       
       processedResults.push({
         blob: result.blob,
@@ -414,20 +440,36 @@ document.getElementById('bulkConvert').addEventListener('click', async () => {
         width: result.width,
         height: result.height
       });
-      
-
     }
     
-    // Display processed images
     displayProcessedImages(processedResults);
+    
+    if (isSingle && shouldDownload) {
+      const result = processedResults[0];
+      const dlUrl = URL.createObjectURL(result.blob);
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = result.filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(dlUrl);
+    }
     
   } catch (err) {
     console.error(err);
     alert('Error processing images: ' + err.message);
   } finally {
-    bulkBtn.disabled = false;
-    bulkBtn.textContent = 'Bulk Convert';
+    btn.disabled = false;
+    btn.textContent = isSingle ? (shouldDownload ? 'Download' : 'Convert') : 'Bulk Convert';
   }
+}
+
+// Bulk convert button
+document.getElementById('bulkConvert').addEventListener('click', async () => {
+  if (currentFiles.length === 0) return;
+  await processBulk(currentFiles);
 });
 
 // Bulk download ZIP button
@@ -453,7 +495,7 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
     
     const a = document.createElement('a');
     a.href = zipUrl;
-    a.download = 'processed_images.zip';
+    a.download = 'metacleaner.zip';
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
@@ -469,106 +511,26 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
   }
 });
 
-// Convert button
+// Convert button - uses bulk processing for single file
 convertBtn.addEventListener('click', async () => {
   if (!currentFile) {
     alert('Please select an image first');
     return;
   }
   
-  convertBtn.disabled = true;
-  convertBtn.textContent = 'Processing...';
-  
-  try {
-    const opts = {
-      quality: parseFloat(qualityEl.value),
-      noise: parseFloat(noiseEl.value),
-      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
-      autocrop: autocropEl.classList.contains('active')
-    };
-    
-    const result = await processImage(currentFile, opts);
-    
-    // Set filename
-    const filename = randomizeEl.classList.contains('active') ? randomFilename() : 'clean.webp';
-    
-    // Create download link
-    const dlUrl = URL.createObjectURL(result.blob);
-    const a = document.createElement('a');
-    a.href = dlUrl;
-    a.download = filename;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(dlUrl);
-    
-    // Update processed metadata
-    procFileName.textContent = filename;
-    procFileSize.textContent = formatFileSize(result.blob.size);
-    procFileType.textContent = result.blob.type || 'image/webp';
-    procDimensions.textContent = `${result.width} × ${result.height} px`;
-    
-    // Display single processed image
-    displayProcessedImages([{
-      blob: result.blob,
-      filename: filename,
-      width: result.width,
-      height: result.height
-    }]);
-
-  } catch (err) {
-    console.error(err);
-    alert('Error processing image: ' + err.message);
-  } finally {
-    convertBtn.disabled = false;
-    convertBtn.textContent = 'Download';
-  }
+  // Process using bulk method
+  await processBulk([currentFile], true);
 });
 
-// Preview button
+// Preview button - uses bulk processing for single file
 previewBtn.addEventListener('click', async () => {
   if (!currentFile) {
     alert('Please select an image first');
     return;
   }
   
-  previewBtn.disabled = true;
-  previewBtn.textContent = 'Processing...';
-  
-  try {
-    const opts = {
-      quality: parseFloat(qualityEl.value),
-      noise: parseFloat(noiseEl.value),
-      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
-      autocrop: autocropEl.classList.contains('active')
-    };
-    
-    const result = await processImage(currentFile, opts);
-    const filename = randomizeEl.classList.contains('active') ? randomFilename() : 'preview.webp';
-    
-    // Update processed metadata
-    procFileName.textContent = filename;
-    procFileSize.textContent = formatFileSize(result.blob.size);
-    procFileType.textContent = result.blob.type || 'image/webp';
-    procDimensions.textContent = `${result.width} × ${result.height} px`;
-    
-    // Display single processed image preview
-    displayProcessedImages([{
-      blob: result.blob,
-      filename: filename,
-      width: result.width,
-      height: result.height
-    }]);
-    
-
-  } catch (err) {
-    console.error(err);
-    alert('Error processing image: ' + err.message);
-  } finally {
-    previewBtn.disabled = false;
-    previewBtn.textContent = 'Convert';
-  }
+  // Process using bulk method without download
+  await processBulk([currentFile], false);
 });
 </script>
 </body>
