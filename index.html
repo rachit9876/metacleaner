@@ -20,7 +20,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body class="dark-theme">
-<h2 class="shimmer">Image Cleaner (No Upload)</h2>
+<h2>Image Cleaner (No Upload)</h2>
 <p class="subtitle">Removes metadata, Convert to webp, Random of Filename</p>
 
 <div class="container">
@@ -101,14 +101,18 @@
 </div>
 
 <div class="security-note">
-  <h3>Privacy Protection Features</h3>
-  <ul>
-    <li><strong>EXIF/GPS Removal:</strong> All camera and location data completely stripped</li>
-    <li><strong>Filename Randomization:</strong> Prevents identification through naming patterns</li>
-    <li><strong>Pixel Noise:</strong> Subtle alterations to break perceptual hash matching</li>
-    <li><strong>No Server Upload:</strong> All processing happens locally in your browser</li>
-  </ul>
-  <p><strong>For maximum anonymity:</strong> Use with Tor/VPN and consider additional resizing.</p>
+  <h3 onclick="togglePrivacyFeatures()" style="cursor:pointer;">Privacy Protection Features ▼</h3>
+  <div id="privacyFeatures" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease;">
+    <ul>
+      <li><strong>Complete Metadata Removal:</strong> Strip all EXIF data, GPS coordinates, and camera information</li>
+      <li><strong>WebP Conversion:</strong> Convert images to efficient WebP format while cleaning metadata</li>
+      <li><strong>Filename Randomization:</strong> Prevents identification through naming patterns</li>
+      <li><strong>Pixel Noise Addition:</strong> Subtle alterations to break perceptual hash matching</li>
+      <li><strong>No Upload Required:</strong> All processing happens offline in your browser</li>
+      <li><strong>Client-Side Processing:</strong> Images never leave your device or get uploaded to servers</li>
+    </ul>
+    <p><strong>Perfect for privacy-conscious users:</strong> Clean image metadata without uploading files. Use with Tor/VPN for maximum anonymity.</p>
+  </div>
 </div>
 
 <canvas id="c" style="display:none"></canvas>
@@ -175,17 +179,7 @@ advancedBtn.addEventListener('click', () => {
   saveSettings();
 });
 
-// Metadata elements
-const origFileName = document.getElementById('orig-file-name');
-const origFileSize = document.getElementById('orig-file-size');
-const origFileType = document.getElementById('orig-file-type');
-const origDimensions = document.getElementById('orig-dimensions');
-const origHasExif = document.getElementById('orig-has-exif');
 
-const procFileName = document.getElementById('proc-file-name');
-const procFileSize = document.getElementById('proc-file-size');
-const procFileType = document.getElementById('proc-file-type');
-const procDimensions = document.getElementById('proc-dimensions');
 
 // Update value displays
 qval.textContent = qualityEl.value;
@@ -195,7 +189,7 @@ noiseEl.oninput = () => { nval.textContent = noiseEl.value; saveSettings(); };
 maxwEl.oninput = saveSettings;
 
 let currentFiles = [];
-let currentFile = null;
+
 
 // Toggle functionality
 autocropEl.addEventListener('click', () => {
@@ -231,12 +225,8 @@ fileEl.addEventListener('change', e => {
       currentFiles = [...currentFiles, ...files];
     } else {
       currentFiles = files;
-      currentFile = files[0];
     }
     displayImages(currentFiles);
-    if (currentFiles.length === 1) {
-      displayOriginalMetadata(currentFiles[0]);
-    }
     enableButtons();
   }
 });
@@ -265,12 +255,8 @@ document.addEventListener('drop', e => {
       currentFiles = [...currentFiles, ...files];
     } else {
       currentFiles = files;
-      currentFile = files[0];
     }
     displayImages(currentFiles);
-    if (currentFiles.length === 1) {
-      displayOriginalMetadata(currentFiles[0]);
-    }
     enableButtons();
   } else if (e.dataTransfer.files.length > 0) {
     alert('Please drop only image files.');
@@ -288,35 +274,15 @@ document.addEventListener('paste', e => {
         currentFiles = [...currentFiles, f];
       } else {
         currentFiles = [f];
-        currentFile = f;
       }
       displayImages(currentFiles);
-      if (currentFiles.length === 1) {
-        displayOriginalMetadata(f);
-      }
       enableButtons();
       break;
     }
   }
 });
 
-// Display original file metadata
-function displayOriginalMetadata(file) {
-  origFileName.textContent = file.name;
-  origFileSize.textContent = formatFileSize(file.size);
-  origFileType.textContent = file.type || 'Unknown';
-  
-  // Check for EXIF data
-  const img = new Image();
-  img.onload = function() {
-    origDimensions.textContent = `${img.width} × ${img.height} px`;
-    
-    // Simple check for EXIF presence (not perfect but better than nothing)
-    const hasExif = file.size > 1024 && file.type === 'image/jpeg';
-    origHasExif.textContent = hasExif ? 'Likely' : 'Unlikely';
-  };
-  img.src = URL.createObjectURL(file);
-}
+
 
 // Format file size
 function formatFileSize(bytes) {
@@ -331,6 +297,7 @@ function formatFileSize(bytes) {
 function displayImages(files) {
   const container = document.getElementById('images-container');
   container.innerHTML = '';
+  container.style.justifyContent = files.length > 0 ? 'flex-start' : 'center';
   
   files.forEach((file, index) => {
     const imageBox = document.createElement('div');
@@ -507,7 +474,7 @@ function updateBulkButton() {
 
 let processedResults = [];
 
-let isProcessed = false;
+
 
 // URL manager to prevent memory leaks
 const urlManager = {
@@ -649,6 +616,22 @@ previewBtn.addEventListener('click', async () => {
   // Process using bulk method without download
   await processBulk([currentFiles[0]], false);
 });
+
+// Toggle privacy features
+function togglePrivacyFeatures() {
+  const features = document.getElementById('privacyFeatures');
+  const container = features.parentElement;
+  const header = features.previousElementSibling;
+  if (features.style.maxHeight === '0px' || !features.style.maxHeight) {
+    features.style.maxHeight = features.scrollHeight + 'px';
+    container.classList.add('expanded');
+    header.innerHTML = 'Privacy Protection Features ▲';
+  } else {
+    features.style.maxHeight = '0px';
+    container.classList.remove('expanded');
+    header.innerHTML = 'Privacy Protection Features ▼';
+  }
+}
 </script>
 </body>
 </html>
