@@ -11,7 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body class="dark-theme">
-<h2>Image Cleaner</h2>
+<h2 class="shimmer">Image Cleaner (No Upload)</h2>
 <p class="subtitle">Removes metadata, adds noise, and randomizes filenames Image</p>
 
 <div class="container">
@@ -20,10 +20,6 @@
     <div class="file-input-wrapper" onclick="document.getElementById('file').click()">
       Choose Images
     </div>
-  </div>
-
-  <div class="row">
-    <button id="advancedBtn">Advanced</button>
   </div>
 
   <div class="controls collapsed">
@@ -51,13 +47,20 @@
       <label>Randomize filename</label>
       <div class="toggle" id="randomize"><div class="toggle-slider"></div></div>
     </div>
+    
+    <div class="control-group">
+      <label>Keep original extension</label>
+      <div class="toggle" id="keepExtension"><div class="toggle-slider"></div></div>
+    </div>
   </div>
 
   <div class="row">
-    <button id="convert">Download</button>
-    <button id="previewBtn">Convert</button>
-    <button id="bulkConvert" style="display:none">Bulk Convert</button>
-    <button id="bulkDownload" style="display:none">Bulk Download ZIP</button>
+    <button id="advancedBtn">Advanced</button>
+    <button id="convert" disabled>Download</button>
+    <button id="previewBtn" disabled>Convert</button>
+    <button id="bulkConvert" style="display:none" disabled>Bulk Convert</button>
+    <button id="bulkDownload" style="display:none" disabled>Bulk Download ZIP</button>
+    <button id="resetBtn" class="purple-btn">Reset</button>
   </div>
 </div>
 
@@ -99,14 +102,49 @@ const nval = document.getElementById('nval');
 const maxwEl = document.getElementById('maxw');
 const autocropEl = document.getElementById('autocrop');
 const randomizeEl = document.getElementById('randomize');
+const keepExtensionEl = document.getElementById('keepExtension');
 const advancedBtn = document.getElementById('advancedBtn');
 const controlsEl = document.querySelector('.controls');
+
+// Load saved settings
+function loadSettings() {
+  const quality = sessionStorage.getItem('quality');
+  const noise = sessionStorage.getItem('noise');
+  const maxWidth = sessionStorage.getItem('maxWidth');
+  const autocrop = sessionStorage.getItem('autocrop') === 'true';
+  const randomize = sessionStorage.getItem('randomize') === 'true';
+  const keepExtension = sessionStorage.getItem('keepExtension') === 'true';
+  const advancedOpen = sessionStorage.getItem('advancedOpen') === 'true';
+  
+  if (quality) { qualityEl.value = quality; qval.textContent = quality; }
+  if (noise) { noiseEl.value = noise; nval.textContent = noise; }
+  if (maxWidth) maxwEl.value = maxWidth;
+  if (autocrop) autocropEl.classList.add('active');
+  if (randomize) randomizeEl.classList.add('active');
+  if (keepExtension) keepExtensionEl.classList.add('active');
+  if (advancedOpen) {
+    controlsEl.classList.remove('collapsed');
+    advancedBtn.textContent = 'Hide Advanced';
+  }
+}
+
+// Save settings
+function saveSettings() {
+  sessionStorage.setItem('quality', qualityEl.value);
+  sessionStorage.setItem('noise', noiseEl.value);
+  sessionStorage.setItem('maxWidth', maxwEl.value);
+  sessionStorage.setItem('autocrop', autocropEl.classList.contains('active'));
+  sessionStorage.setItem('randomize', randomizeEl.classList.contains('active'));
+  sessionStorage.setItem('keepExtension', keepExtensionEl.classList.contains('active'));
+  sessionStorage.setItem('advancedOpen', !controlsEl.classList.contains('collapsed'));
+}
 
 // Advanced toggle
 advancedBtn.addEventListener('click', () => {
   const isCollapsed = controlsEl.classList.contains('collapsed');
   controlsEl.classList.toggle('collapsed');
   advancedBtn.textContent = isCollapsed ? 'Hide Advanced' : 'Advanced';
+  saveSettings();
 });
 
 // Metadata elements
@@ -123,9 +161,10 @@ const procDimensions = document.getElementById('proc-dimensions');
 
 // Update value displays
 qval.textContent = qualityEl.value;
-qualityEl.oninput = () => qval.textContent = qualityEl.value;
+qualityEl.oninput = () => { qval.textContent = qualityEl.value; saveSettings(); };
 nval.textContent = noiseEl.value;
-noiseEl.oninput = () => nval.textContent = noiseEl.value;
+noiseEl.oninput = () => { nval.textContent = noiseEl.value; saveSettings(); };
+maxwEl.oninput = saveSettings;
 
 let currentFiles = [];
 let currentFile = null;
@@ -133,11 +172,27 @@ let currentFile = null;
 // Toggle functionality
 autocropEl.addEventListener('click', () => {
   autocropEl.classList.toggle('active');
+  saveSettings();
 });
 
 randomizeEl.addEventListener('click', () => {
   randomizeEl.classList.toggle('active');
+  saveSettings();
 });
+
+keepExtensionEl.addEventListener('click', () => {
+  keepExtensionEl.classList.toggle('active');
+  saveSettings();
+});
+
+// Reset session
+document.getElementById('resetBtn').addEventListener('click', () => {
+  sessionStorage.clear();
+  location.reload();
+});
+
+// Load settings on page load
+loadSettings();
 
 // Event listeners
 fileEl.addEventListener('change', e => {
@@ -154,6 +209,7 @@ fileEl.addEventListener('change', e => {
     if (currentFiles.length === 1) {
       displayOriginalMetadata(currentFiles[0]);
     }
+    enableButtons();
   }
 });
 
@@ -187,6 +243,7 @@ document.addEventListener('drop', e => {
     if (currentFiles.length === 1) {
       displayOriginalMetadata(currentFiles[0]);
     }
+    enableButtons();
   } else if (e.dataTransfer.files.length > 0) {
     alert('Please drop only image files.');
   }
@@ -209,6 +266,7 @@ document.addEventListener('paste', e => {
       if (currentFiles.length === 1) {
         displayOriginalMetadata(f);
       }
+      enableButtons();
       break;
     }
   }
@@ -267,6 +325,7 @@ function displayImages(files) {
   });
   
   updateBulkButton();
+  enableButtons();
 }
 
 // Display processed images
@@ -350,23 +409,50 @@ async function processImage(file, opts) {
     ctx.putImageData(applyNoise(imageData, opts.noise), 0, 0);
   }
   
+  // Determine output format
+  const outputType = opts.keepExtension && file.type ? file.type : 'image/webp';
+  const quality = outputType === 'image/jpeg' ? opts.quality : (outputType === 'image/webp' ? opts.quality : undefined);
+  
   // Create blob
   const blob = await new Promise(resolve => {
-    canvas.toBlob(resolve, 'image/webp', opts.quality);
+    canvas.toBlob(resolve, outputType, quality);
   });
   
   URL.revokeObjectURL(url);
-  return { blob, width, height };
+  return { blob, width, height, outputType };
 }
 
 // Generate random 6-character filename
-function randomFilename() {
+function randomFilename(extension = '.webp') {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
   for (let i = 0; i < 6; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return result + '.webp';
+  return result + extension;
+}
+
+// Get file extension from MIME type
+function getExtensionFromType(type) {
+  const extensions = {
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/webp': '.webp',
+    'image/gif': '.gif',
+    'image/bmp': '.bmp'
+  };
+  return extensions[type] || '.webp';
+}
+
+// Enable buttons when files are loaded
+function enableButtons() {
+  const convertBtn = document.getElementById('convert');
+  const previewBtn = document.getElementById('previewBtn');
+  const bulkConvertBtn = document.getElementById('bulkConvert');
+  
+  convertBtn.disabled = false;
+  previewBtn.disabled = false;
+  bulkConvertBtn.disabled = false;
 }
 
 // Show/hide buttons based on file count
@@ -424,7 +510,8 @@ async function processBulk(files, shouldDownload = false) {
       quality: parseFloat(qualityEl.value),
       noise: parseFloat(noiseEl.value),
       maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
-      autocrop: autocropEl.classList.contains('active')
+      autocrop: autocropEl.classList.contains('active'),
+      keepExtension: keepExtensionEl.classList.contains('active')
     };
     
     for (let i = 0; i < files.length; i++) {
@@ -432,7 +519,8 @@ async function processBulk(files, shouldDownload = false) {
       if (!isSingle) btn.textContent = `Processing ${i + 1}/${files.length}...`;
       
       const result = await processImage(file, opts);
-      const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${file.name.split('.')[0]}.webp`;
+      const extension = opts.keepExtension ? getExtensionFromType(result.outputType) : '.webp';
+      const filename = randomizeEl.classList.contains('active') ? randomFilename(extension) : `${file.name.split('.')[0]}${extension}`;
       
       processedResults.push({
         blob: result.blob,
@@ -443,6 +531,7 @@ async function processBulk(files, shouldDownload = false) {
     }
     
     displayProcessedImages(processedResults);
+    document.getElementById('bulkDownload').disabled = false;
     
     if (isSingle && shouldDownload) {
       const result = processedResults[0];
@@ -513,24 +602,24 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
 
 // Convert button - uses bulk processing for single file
 convertBtn.addEventListener('click', async () => {
-  if (!currentFile) {
+  if (currentFiles.length === 0) {
     alert('Please select an image first');
     return;
   }
   
   // Process using bulk method
-  await processBulk([currentFile], true);
+  await processBulk([currentFiles[0]], true);
 });
 
 // Preview button - uses bulk processing for single file
 previewBtn.addEventListener('click', async () => {
-  if (!currentFile) {
+  if (currentFiles.length === 0) {
     alert('Please select an image first');
     return;
   }
   
   // Process using bulk method without download
-  await processBulk([currentFile], false);
+  await processBulk([currentFiles[0]], false);
 });
 </script>
 </body>

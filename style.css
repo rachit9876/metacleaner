@@ -64,11 +64,52 @@ h2 {
     font-size: clamp(2rem, 5vw, 2.75rem);
     font-weight: 300;
     margin-bottom: 0.75rem;
-    background: linear-gradient(135deg, var(--text-primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
     letter-spacing: -0.02em;
+}
+
+.shimmer {
+    color: rgba(255, 255, 255, 0.1);
+    background: -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+    background: -moz-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+    background: gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+    -webkit-background-size: 125px 100%;
+    -moz-background-size: 125px 100%;
+    background-size: 125px 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    -webkit-animation-name: shimmer;
+    -moz-animation-name: shimmer;
+    animation-name: shimmer;
+    -webkit-animation-duration: 6s;
+    -moz-animation-duration: 6s;
+    animation-duration: 6s;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-color: #222;
+}
+
+@-moz-keyframes shimmer {
+    0% { background-position: top left; }
+    100% { background-position: top right; }
+}
+
+@-webkit-keyframes shimmer {
+    0% { background-position: top left; }
+    100% { background-position: top right; }
+}
+
+@-o-keyframes shimmer {
+    0% { background-position: top left; }
+    100% { background-position: top right; }
+}
+
+@keyframes shimmer {
+    0% { background-position: top left; }
+    100% { background-position: top right; }
 }
 
 .subtitle {
@@ -107,10 +148,10 @@ input[type="file"] {
 .file-input-wrapper {
     flex: 1;
     min-width: 220px;
-    padding: 1.25rem;
+    padding: 0.75rem 1.25rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    border-radius: 9999px;
     color: var(--text-primary);
     font-family: inherit;
     cursor: pointer;
@@ -145,17 +186,17 @@ input[type="file"] {
 }
 
 button {
-    padding: 0.75rem 1.25rem;
+    padding: 0.5rem 1.25rem;
     background: var(--accent);
     color: #000000;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: 9999px;
     cursor: pointer;
     font-family: inherit;
     font-weight: 600;
     transition: var(--transition);
     touch-action: manipulation;
-    min-height: 40px;
+    min-height: 32px;
     font-size: 0.9rem;
     display: inline-flex;
     align-items: center;
@@ -178,6 +219,16 @@ button:disabled {
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+.purple-btn {
+    background: #f87171;
+    box-shadow: 0 2px 8px rgba(248, 113, 113, 0.3);
+}
+
+.purple-btn:hover {
+    background: #ef4444;
+    box-shadow: 0 4px 12px rgba(248, 113, 113, 0.4);
 }
 
 #dropbtn {
@@ -600,6 +651,12 @@ input[type="number"]:focus {
     font-style: italic;
     color: var(--text-tertiary);
     font-size: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .shimmer {
+        animation: none;
+    }
 }
 
 @media (max-width: 768px) {
