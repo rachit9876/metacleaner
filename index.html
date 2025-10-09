@@ -22,10 +22,6 @@
     </div>
   </div>
 
-  <div class="row">
-    <button id="advancedBtn">Advanced</button>
-  </div>
-
   <div class="controls collapsed">
     <div class="control-group">
       <label>Quality <span id="qval">0.80</span></label>
@@ -54,10 +50,11 @@
   </div>
 
   <div class="row">
-    <button id="convert">Download</button>
-    <button id="previewBtn">Convert</button>
-    <button id="bulkConvert" style="display:none">Bulk Convert</button>
-    <button id="bulkDownload" style="display:none">Bulk Download ZIP</button>
+    <button id="advancedBtn">Advanced</button>
+    <button id="convert" disabled>Download</button>
+    <button id="previewBtn" disabled>Convert</button>
+    <button id="bulkConvert" style="display:none" disabled>Bulk Convert</button>
+    <button id="bulkDownload" style="display:none" disabled>Bulk Download ZIP</button>
   </div>
 </div>
 
@@ -154,6 +151,7 @@ fileEl.addEventListener('change', e => {
     if (currentFiles.length === 1) {
       displayOriginalMetadata(currentFiles[0]);
     }
+    enableButtons();
   }
 });
 
@@ -187,6 +185,7 @@ document.addEventListener('drop', e => {
     if (currentFiles.length === 1) {
       displayOriginalMetadata(currentFiles[0]);
     }
+    enableButtons();
   } else if (e.dataTransfer.files.length > 0) {
     alert('Please drop only image files.');
   }
@@ -209,6 +208,7 @@ document.addEventListener('paste', e => {
       if (currentFiles.length === 1) {
         displayOriginalMetadata(f);
       }
+      enableButtons();
       break;
     }
   }
@@ -369,6 +369,17 @@ function randomFilename() {
   return result + '.webp';
 }
 
+// Enable buttons when files are loaded
+function enableButtons() {
+  const convertBtn = document.getElementById('convert');
+  const previewBtn = document.getElementById('previewBtn');
+  const bulkConvertBtn = document.getElementById('bulkConvert');
+  
+  convertBtn.disabled = false;
+  previewBtn.disabled = false;
+  bulkConvertBtn.disabled = false;
+}
+
 // Show/hide buttons based on file count
 function updateBulkButton() {
   const convertBtn = document.getElementById('convert');
@@ -443,6 +454,7 @@ async function processBulk(files, shouldDownload = false) {
     }
     
     displayProcessedImages(processedResults);
+    document.getElementById('bulkDownload').disabled = false;
     
     if (isSingle && shouldDownload) {
       const result = processedResults[0];
