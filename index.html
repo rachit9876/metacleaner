@@ -419,7 +419,7 @@ document.getElementById('bulkConvert').addEventListener('click', async () => {
       bulkBtn.textContent = `Processing ${i + 1}/${currentFiles.length}...`;
       
       const result = await processImage(file, opts);
-      const filename = randomizeEl.classList.contains('active') ? randomFilename() : `clean_${i + 1}.webp`;
+      const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${file.name.split('.')[0]}.webp`;
       
       processedResults.push({
         blob: result.blob,
@@ -504,7 +504,7 @@ convertBtn.addEventListener('click', async () => {
     const result = await processImage(currentFile, opts);
     
     // Set filename
-    const filename = randomizeEl.classList.contains('active') ? randomFilename() : 'clean.webp';
+    const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${currentFile.name.split('.')[0]}.webp`;
     
     // Create download link
     const dlUrl = URL.createObjectURL(result.blob);
@@ -560,7 +560,7 @@ previewBtn.addEventListener('click', async () => {
     };
     
     const result = await processImage(currentFile, opts);
-    const filename = randomizeEl.classList.contains('active') ? randomFilename() : 'preview.webp';
+    const filename = randomizeEl.classList.contains('active') ? randomFilename() : `${currentFile.name.split('.')[0]}.webp`;
     
     // Update processed metadata
     procFileName.textContent = filename;
