@@ -15,7 +15,8 @@
 <meta name="twitter:description" content="Clean image metadata and convert to WebP format. Privacy-focused image processing tool.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Alata&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alata&display=swap"></noscript>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
@@ -69,9 +70,10 @@
     <button id="previewBtn" disabled>Convert</button>
     <button id="bulkConvert" style="display:none" disabled>Bulk Convert</button>
     <button id="bulkDownload" style="display:none" disabled>Bulk Download ZIP</button>
-    <button id="resetBtn" class="purple-btn">Reset</button>
   </div>
 </div>
+
+<button id="resetBtn" class="purple-btn">Reset</button>
 
 <div id="images-container" class="images-container"></div>
 
@@ -623,13 +625,19 @@ function togglePrivacyFeatures() {
   const container = features.parentElement;
   const header = features.previousElementSibling;
   if (features.style.maxHeight === '0px' || !features.style.maxHeight) {
-    features.style.maxHeight = features.scrollHeight + 'px';
+    // Expanding: first animate border-radius, then content
     container.classList.add('expanded');
-    header.innerHTML = 'Privacy Protection Features ▲';
+    setTimeout(() => {
+      features.style.maxHeight = features.scrollHeight + 'px';
+      header.innerHTML = 'Privacy Protection Features ▲';
+    }, 300);
   } else {
+    // Collapsing: first collapse content, then animate border-radius
     features.style.maxHeight = '0px';
-    container.classList.remove('expanded');
     header.innerHTML = 'Privacy Protection Features ▼';
+    setTimeout(() => {
+      container.classList.remove('expanded');
+    }, 300);
   }
 }
 </script>
