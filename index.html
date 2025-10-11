@@ -158,7 +158,7 @@ function loadSettings() {
   if (keepExtension) keepExtensionEl.classList.add('active');
   if (advancedOpen) {
     controlsEl.classList.remove('collapsed');
-    advancedBtn.textContent = 'Hide Advanced';
+    advancedBtn.textContent = 'Hide';
   }
 }
 
@@ -177,7 +177,7 @@ function saveSettings() {
 advancedBtn.addEventListener('click', () => {
   const isCollapsed = controlsEl.classList.contains('collapsed');
   controlsEl.classList.toggle('collapsed');
-  advancedBtn.textContent = isCollapsed ? 'Hide Advanced' : 'Advanced';
+  advancedBtn.textContent = isCollapsed ? 'Hide' : 'Advanced';
   saveSettings();
 });
 
