@@ -39,6 +39,9 @@ body {
     -webkit-tap-highlight-color: transparent;
     font-size: 16px;
     overflow-x: hidden;
+    touch-action: pan-y;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body.drag-over {
@@ -125,6 +128,12 @@ input[type="file"] {
     font-size: 1rem;
     position: relative;
     overflow: hidden;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .file-input-wrapper::before {
@@ -161,12 +170,14 @@ button {
     font-weight: 600;
     transition: var(--transition);
     touch-action: manipulation;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 0.95rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-sm);
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 button:hover {
@@ -177,7 +188,8 @@ button:hover {
 }
 
 button:active {
-    transform: translateY(0);
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
 }
 
 button:disabled {
@@ -286,8 +298,8 @@ input[type="range"] {
 
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
     border-radius: 50%;
     cursor: pointer;
@@ -305,8 +317,8 @@ input[type="range"]::-webkit-slider-thumb:active {
 }
 
 input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
     border-radius: 50%;
     cursor: pointer;
@@ -345,15 +357,17 @@ input[type="number"]:focus {
 }
 
 .toggle {
-    width: 52px;
-    height: 28px;
+    width: 56px;
+    height: 32px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 28px;
+    border-radius: 32px;
     position: relative;
     cursor: pointer;
     transition: var(--transition);
     border: 2px solid var(--border-color);
     touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .toggle.active {
@@ -363,8 +377,8 @@ input[type="number"]:focus {
 }
 
 .toggle-slider {
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
     background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
     border-radius: 50%;
     position: absolute;
@@ -375,7 +389,7 @@ input[type="number"]:focus {
 }
 
 .toggle.active .toggle-slider {
-    left: 25px;
+    left: 26px;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
 }
 
@@ -395,6 +409,7 @@ input[type="number"]:focus {
     min-height: 140px;
     align-items: center;
     justify-content: center;
+    scroll-behavior: smooth;
 }
 
 .images-container:empty::before {
@@ -460,6 +475,7 @@ input[type="number"]:focus {
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scroll-behavior: smooth;
 }
 
 .processed-images-grid::-webkit-scrollbar {
@@ -629,13 +645,15 @@ input[type="number"]:focus {
     .row button {
         flex: 1;
         min-width: 120px;
-        font-size: 0.9rem;
-        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        padding: 0.875rem 1rem;
+        min-height: 50px;
     }
     
     .file-input-wrapper {
         width: 100%;
         padding: 1rem;
+        min-height: 54px;
     }
     
     .controls {
@@ -663,8 +681,19 @@ input[type="number"]:focus {
     #resetBtn {
         bottom: 16px;
         right: 16px;
-        padding: 0.75rem 1.25rem;
-        font-size: 0.9rem;
+        padding: 0.875rem 1.25rem;
+        font-size: 0.95rem;
+        min-height: 50px;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        width: 28px;
+        height: 28px;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
     }
 }
 
@@ -695,8 +724,9 @@ input[type="number"]:focus {
     .row button {
         flex: 1 1 calc(50% - 0.3125rem);
         min-width: 0;
-        font-size: 0.875rem;
-        padding: 0.75rem 0.875rem;
+        font-size: 0.9rem;
+        padding: 0.875rem 0.75rem;
+        min-height: 50px;
     }
     
     .controls {
@@ -728,12 +758,13 @@ input[type="number"]:focus {
     }
     
     button {
-        min-height: 42px;
+        min-height: 50px;
     }
     
     .file-input-wrapper {
-        padding: 0.875rem 1rem;
+        padding: 1rem;
         font-size: 0.95rem;
+        min-height: 54px;
     }
     
     .control-group label {
@@ -747,7 +778,36 @@ input[type="number"]:focus {
     #resetBtn {
         bottom: 12px;
         right: 12px;
-        padding: 0.625rem 1rem;
-        font-size: 0.875rem;
+        padding: 0.75rem 1.125rem;
+        font-size: 0.9rem;
+        min-height: 50px;
+    }
+    
+    input[type="range"] {
+        height: 8px;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        width: 32px;
+        height: 32px;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .toggle {
+        width: 60px;
+        height: 36px;
+    }
+    
+    .toggle-slider {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .toggle.active .toggle-slider {
+        left: 26px;
     }
 }

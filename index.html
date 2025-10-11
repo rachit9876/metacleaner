@@ -39,8 +39,8 @@
     </div>
 
     <div class="control-group">
-      <label>Noise Level <span id="nval">0.5</span></label>
-      <input id="noise" type="range" min="0" max="3" step="0.1" value="0.5">
+      <label>Noise Level <span id="nval">0</span></label>
+      <input id="noise" type="range" min="0" max="3" step="0.1" value="0">
     </div>
 
     <div class="control-group">
@@ -66,8 +66,8 @@
 
   <div class="row">
     <button id="advancedBtn">Advanced</button>
-    <button id="convert" disabled>Download</button>
-    <button id="previewBtn" disabled>Preview</button>
+    <button id="convert" disabled>Convert</button>
+    <button id="download" style="display:none" disabled>Download</button>
     <button id="bulkConvert" style="display:none" disabled>Bulk Convert</button>
     <button id="bulkDownload" style="display:none" disabled>Download ZIP</button>
   </div>
@@ -122,7 +122,6 @@
 <script>
 const fileEl = document.getElementById('file');
 const convertBtn = document.getElementById('convert');
-const previewBtn = document.getElementById('previewBtn');
 
 
 const canvas = document.getElementById('c');
@@ -444,31 +443,27 @@ function getExtensionFromType(type) {
 // Enable buttons when files are loaded
 function enableButtons() {
   const convertBtn = document.getElementById('convert');
-  const previewBtn = document.getElementById('previewBtn');
   const bulkConvertBtn = document.getElementById('bulkConvert');
   
   convertBtn.disabled = false;
-  previewBtn.disabled = false;
   bulkConvertBtn.disabled = false;
 }
 
 // Show/hide buttons based on file count
 function updateBulkButton() {
   const convertBtn = document.getElementById('convert');
-  const previewBtn = document.getElementById('previewBtn');
+  const downloadBtn = document.getElementById('download');
   const bulkConvertBtn = document.getElementById('bulkConvert');
   const bulkDownloadBtn = document.getElementById('bulkDownload');
   
   if (currentFiles.length > 1) {
-    // Multiple images: show bulk buttons, hide single buttons
     convertBtn.style.display = 'none';
-    previewBtn.style.display = 'none';
+    downloadBtn.style.display = 'none';
     bulkConvertBtn.style.display = 'inline-block';
     bulkDownloadBtn.style.display = 'inline-block';
   } else {
-    // Single image: show single buttons, hide bulk buttons
     convertBtn.style.display = 'inline-block';
-    previewBtn.style.display = 'inline-block';
+    downloadBtn.style.display = 'none';
     bulkConvertBtn.style.display = 'none';
     bulkDownloadBtn.style.display = 'none';
   }
@@ -493,10 +488,10 @@ const urlManager = {
 };
 
 // Unified processing function
-async function processBulk(files, shouldDownload = false) {
+async function processBulk(files) {
   urlManager.cleanup();
   const isSingle = files.length === 1;
-  const btn = isSingle ? (shouldDownload ? convertBtn : previewBtn) : document.getElementById('bulkConvert');
+  const btn = isSingle ? convertBtn : document.getElementById('bulkConvert');
   
   btn.disabled = true;
   btn.textContent = 'Processing...';
@@ -528,19 +523,12 @@ async function processBulk(files, shouldDownload = false) {
     }
     
     displayProcessedImages(processedResults);
-    document.getElementById('bulkDownload').disabled = false;
     
-    if (isSingle && shouldDownload) {
-      const result = processedResults[0];
-      const dlUrl = URL.createObjectURL(result.blob);
-      const a = document.createElement('a');
-      a.href = dlUrl;
-      a.download = result.filename;
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(dlUrl);
+    if (isSingle) {
+      document.getElementById('download').style.display = 'inline-block';
+      document.getElementById('download').disabled = false;
+    } else {
+      document.getElementById('bulkDownload').disabled = false;
     }
     
   } catch (err) {
@@ -548,7 +536,7 @@ async function processBulk(files, shouldDownload = false) {
     alert('Error processing images: ' + err.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = isSingle ? (shouldDownload ? 'Download' : 'Convert') : 'Bulk Convert';
+    btn.textContent = isSingle ? 'Convert' : 'Bulk Convert';
   }
 }
 
@@ -597,26 +585,28 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
   }
 });
 
-// Convert button - uses bulk processing for single file
+// Convert button
 convertBtn.addEventListener('click', async () => {
   if (currentFiles.length === 0) {
     alert('Please select an image first');
     return;
   }
-  
-  // Process using bulk method
-  await processBulk([currentFiles[0]], true);
+  await processBulk([currentFiles[0]]);
 });
 
-// Preview button - uses bulk processing for single file
-previewBtn.addEventListener('click', async () => {
-  if (currentFiles.length === 0) {
-    alert('Please select an image first');
-    return;
-  }
-  
-  // Process using bulk method without download
-  await processBulk([currentFiles[0]], false);
+// Download button
+document.getElementById('download').addEventListener('click', () => {
+  if (processedResults.length === 0) return;
+  const result = processedResults[0];
+  const dlUrl = URL.createObjectURL(result.blob);
+  const a = document.createElement('a');
+  a.href = dlUrl;
+  a.download = result.filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(dlUrl);
 });
 
 // Toggle privacy features
