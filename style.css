@@ -22,6 +22,16 @@
     box-sizing: border-box;
 }
 
+::selection {
+    background: #ffff00;
+    color: #000;
+}
+
+::-moz-selection {
+    background: #ffff00;
+    color: #000;
+}
+
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;

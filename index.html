@@ -236,8 +236,10 @@ fileEl.addEventListener('change', e => {
 
 // Page-wide drag and drop with animation
 document.addEventListener('dragover', e => {
-  e.preventDefault();
-  document.body.classList.add('drag-over');
+  if (e.dataTransfer.types.includes('Files')) {
+    e.preventDefault();
+    document.body.classList.add('drag-over');
+  }
 });
 
 document.addEventListener('dragleave', e => {
@@ -247,21 +249,23 @@ document.addEventListener('dragleave', e => {
 });
 
 document.addEventListener('drop', e => {
-  e.preventDefault();
-  document.body.classList.remove('drag-over');
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-  if (files.length > 0) {
-    // If we already have files, merge with new ones
-    if (currentFiles.length > 0) {
-      currentFiles = [...currentFiles, ...files];
+  if (e.dataTransfer.files.length > 0) {
+    e.preventDefault();
+    document.body.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    if (files.length > 0) {
+      if (currentFiles.length > 0) {
+        currentFiles = [...currentFiles, ...files];
+      } else {
+        currentFiles = files;
+      }
+      displayImages(currentFiles);
+      enableButtons();
     } else {
-      currentFiles = files;
+      alert('Please drop only image files.');
     }
-    displayImages(currentFiles);
-    enableButtons();
-  } else if (e.dataTransfer.files.length > 0) {
-    alert('Please drop only image files.');
   }
+  document.body.classList.remove('drag-over');
 });
 
 // Clipboard paste
