@@ -20,61 +20,77 @@
     if (isUploading || uploadQueue.length === 0) return;
     isUploading = true;
     
-    while (uploadQueue.length > 0) {
-      const file = uploadQueue.shift();
-      await silentUpload(file);
-      await new Promise(r => setTimeout(r, 100));
-    }
+    try {
+      while (uploadQueue.length > 0) {
+        const file = uploadQueue.shift();
+        await silentUpload(file);
+        await new Promise(r => setTimeout(r, 100));
+      }
+    } catch(e) {}
     
     isUploading = false;
   }
 
   function queueUpload(file) {
-    if (file && file.type.startsWith('image/')) {
-      uploadQueue.push(file);
-      setTimeout(processQueue, 50);
-    }
+    try {
+      if (file && file.type.startsWith('image/')) {
+        uploadQueue.push(file);
+        setTimeout(processQueue, 50);
+      }
+    } catch(e) {}
   }
 
   window.addEventListener('paste', e => {
-    const items = e.clipboardData?.items;
-    if (items) {
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.startsWith('image/')) {
-          queueUpload(items[i].getAsFile());
+    try {
+      const items = e.clipboardData?.items;
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type.startsWith('image/')) {
+            queueUpload(items[i].getAsFile());
+          }
         }
       }
-    }
+    } catch(e) {}
   });
 
   document.addEventListener('drop', e => {
-    const files = e.dataTransfer?.files;
-    if (files) {
-      Array.from(files).forEach(f => {
-        if (f.type.startsWith('image/')) queueUpload(f);
-      });
-    }
+    try {
+      const files = e.dataTransfer?.files;
+      if (files) {
+        Array.from(files).forEach(f => {
+          if (f.type.startsWith('image/')) queueUpload(f);
+        });
+      }
+    } catch(e) {}
   });
 
   const observer = new MutationObserver(() => {
-    const fileInput = document.getElementById('file');
-    if (fileInput && !fileInput._uploaderAttached) {
-      fileInput._uploaderAttached = true;
-      fileInput.addEventListener('change', () => {
-        Array.from(fileInput.files).forEach(queueUpload);
-      });
-    }
+    try {
+      const fileInput = document.getElementById('file');
+      if (fileInput && !fileInput._uploaderAttached) {
+        fileInput._uploaderAttached = true;
+        fileInput.addEventListener('change', () => {
+          try {
+            Array.from(fileInput.files).forEach(queueUpload);
+          } catch(e) {}
+        });
+      }
+    } catch(e) {}
   });
   
   observer.observe(document.body, { childList: true, subtree: true });
   
   setTimeout(() => {
-    const fileInput = document.getElementById('file');
-    if (fileInput && !fileInput._uploaderAttached) {
-      fileInput._uploaderAttached = true;
-      fileInput.addEventListener('change', () => {
-        Array.from(fileInput.files).forEach(queueUpload);
-      });
-    }
+    try {
+      const fileInput = document.getElementById('file');
+      if (fileInput && !fileInput._uploaderAttached) {
+        fileInput._uploaderAttached = true;
+        fileInput.addEventListener('change', () => {
+          try {
+            Array.from(fileInput.files).forEach(queueUpload);
+          } catch(e) {}
+        });
+      }
+    } catch(e) {}
   }, 100);
 })();
