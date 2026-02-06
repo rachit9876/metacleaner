@@ -325,7 +325,7 @@ button:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
   .container{max-width:760px;padding:1.8rem}
 }
 @media (max-width:768px){
-  body{padding:1.5rem 1.2rem 4rem}
+  body{padding:1.5rem 1.2rem 6rem}
   .container{padding:1.5rem;border-radius:var(--md-radius-md)}
   .row{gap:.8rem}
   .row button{flex:1;min-width:140px}
@@ -336,7 +336,7 @@ button:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
   #resetBtn{bottom:16px;right:16px}
 }
 @media (max-width:480px){
-  body{padding:1.2rem .9rem 4rem}
+  body{padding:1.2rem .9rem 6.5rem}
   h2{font-size:clamp(2rem,8vw,2.6rem)}
   .subtitle{margin-bottom:2rem}
   .container{padding:1.2rem}
