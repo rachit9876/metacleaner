@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Image Cleaner - Remove Metadata, Convert to WebP | Free Online Tool</title><meta name="description" content="Free no upload image cleaner tool. Remove EXIF metadata, convert images to WebP format offline. Strip GPS data and protect privacy - all processing happens locally in your browser without uploading files."><meta name="keywords" content="image cleaner, metadata remover, webp converter, exif remover, image to webp, remove gps data, privacy tool, image optimizer, no upload image cleaner, offline image processor, client side image converter"><meta name="robots" content="index, follow"><meta property="og:title" content="Image Cleaner - Remove Metadata & Convert to WebP"><meta property="og:description" content="Free tool to clean image metadata and convert to WebP. Remove EXIF, GPS data for privacy protection."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Image Cleaner - Metadata Remover & WebP Converter"><meta name="twitter:description" content="Clean image metadata and convert to WebP format. Privacy-focused image processing tool."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" href="https://fonts.googleapis.com/css2?family=Alata&display=swap" as="style" onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alata&display=swap"></noscript><link rel="stylesheet" href="style.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script></head><body class="dark-theme"><h2>Image Cleaner</h2><p class="subtitle">No Upload • Remove Metadata • Convert to WebP • Randomize Filenames</p><div class="container"><div class="row"><input id="file" type="file" accept="image/*" multiple="multiple"><div class="file-input-wrapper" onclick='document.getElementById("file").click()'>Choose Images or Drop Here</div></div><div class="controls collapsed"><div class="control-group"><label>Quality<span id="qval">0.80</span></label><input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.80"></div><div class="control-group"><label>Noise Level<span id="nval">0</span></label><input id="noise" type="range" min="0" max="3" step="0.1" value="0"></div><div class="control-group"><label>Max Width (px)</label><input id="maxw" type="number" min="1" placeholder="Original size"></div><div class="control-group"><label>Tight crop (2px)</label><div class="toggle" id="autocrop"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Randomize filename</label><div class="toggle" id="randomize"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Keep original extension</label><div class="toggle" id="keepExtension"><div class="toggle-slider"></div></div></div></div><div class="row"><button id="advancedBtn">Advanced</button><button id="convert" disabled="disabled">Convert</button><button id="download" style="display:none" disabled="disabled">Download</button><button id="bulkConvert" style="display:none" disabled="disabled">Bulk Convert</button><button id="bulkDownload" style="display:none" disabled="disabled">Download ZIP</button></div></div><button id="resetBtn" class="purple-btn">Reset</button><div id="images-container" class="images-container"></div><div id="processed-images-container" class="images-container" style="display:none"><h3>Processed Images</h3></div><div style="position:absolute;left:-9999px;opacity:0;height:1px;overflow:hidden"><h1>Image Cleaner - Professional Metadata Remover and WebP Converter</h1><p>Best free no upload image cleaner tool to remove metadata from photos offline. Convert images to WebP format while stripping EXIF data, GPS coordinates, and camera information. Protect your privacy with our advanced offline image to webp converter that removes all hidden metadata from JPEG, PNG, and other image formats without uploading files to any server.</p><h2>Features of Our Image Metadata Remover:</h2><ul><li>Remove EXIF metadata from images completely</li><li>Convert image to webp format with high quality</li><li>Strip GPS location data from photos</li><li>Bulk image processing and conversion</li><li>Privacy-focused image cleaner tool</li><li>No upload required - process images locally offline</li><li>Client-side image processing without server upload</li><li>Offline image cleaner and webp converter</li><li>No file upload image metadata remover</li></ul><h3>Why Use Our Image to WebP Converter?</h3><p>Our image cleaner removes sensitive metadata including camera settings, GPS coordinates, timestamps, and device information. Convert your images to efficient WebP format while ensuring complete privacy protection. Perfect for photographers, bloggers, and privacy-conscious users who need a reliable metadata remover tool.</p></div><div class="security-note"><h3 onclick="togglePrivacyFeatures()" style="cursor:pointer">Privacy Protection Features ▼</h3><div id="privacyFeatures" style="max-height:0;overflow:hidden;transition:max-height .3s ease"><ul><li><strong>Complete Metadata Removal:</strong>Strip all EXIF data, GPS coordinates, and camera information</li><li><strong>WebP Conversion:</strong>Convert images to efficient WebP format while cleaning metadata</li><li><strong>Filename Randomization:</strong>Prevents identification through naming patterns</li><li><strong>Pixel Noise Addition:</strong>Subtle alterations to break perceptual hash matching</li><li><strong>No Upload Required:</strong>All processing happens offline in your browser</li><li><strong>Client-Side Processing:</strong>Images never leave your device or get uploaded to servers</li></ul><p><strong>Perfect for privacy-conscious users:</strong>Clean image metadata without uploading files. Use with Tor/VPN for maximum anonymity.</p></div></div><canvas id="c" style="display:none"></canvas><script src="bg.js"></script><script>const fileEl = document.getElementById('file');
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Image Cleaner - Remove Metadata, Convert to WebP | Free Online Tool</title><meta name="description" content="Free no upload image cleaner tool. Remove EXIF metadata, convert images to WebP format offline. Strip GPS data and protect privacy - all processing happens locally in your browser without uploading files."><meta name="keywords" content="image cleaner, metadata remover, webp converter, exif remover, image to webp, remove gps data, privacy tool, image optimizer, no upload image cleaner, offline image processor, client side image converter"><meta name="robots" content="index, follow"><meta property="og:title" content="Image Cleaner - Remove Metadata & Convert to WebP"><meta property="og:description" content="Free tool to clean image metadata and convert to WebP. Remove EXIF, GPS data for privacy protection."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Image Cleaner - Metadata Remover & WebP Converter"><meta name="twitter:description" content="Clean image metadata and convert to WebP format. Privacy-focused image processing tool."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" as="style" onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript><link rel="stylesheet" href="style.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="assets/vendor/piexif.min.js"></script><script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script></head><body class="dark-theme"><h2>Image Cleaner</h2><p class="subtitle">No Upload • Strip Metadata • Images + PDFs • Optional Conversion</p><div class="container"><div class="row"><input id="file" type="file" accept="image/*,application/pdf" multiple="multiple"><div class="file-input-wrapper" onclick='document.getElementById("file").click()'>Choose Files or Drop Here</div></div><div class="controls collapsed"><div class="control-group"><label>Quality<span id="qval">0.80</span></label><input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.80"></div><div class="control-group"><label>Noise Level<span id="nval">0</span></label><input id="noise" type="range" min="0" max="3" step="0.1" value="0"></div><div class="control-group"><label>Max Width (px)</label><input id="maxw" type="number" min="1" placeholder="Original size"></div><div class="control-group"><label>Tight crop (2px)</label><div class="toggle" id="autocrop"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Randomize filename</label><div class="toggle" id="randomize"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Output format</label><select id="outputFormat"><option value="keep" selected>Keep original</option><option value="image/webp">WebP</option><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select></div></div><div class="row"><button id="advancedBtn">Advanced</button><button id="convert" disabled="disabled">Convert</button><button id="download" style="display:none" disabled="disabled">Download</button><button id="bulkConvert" style="display:none" disabled="disabled">Bulk Convert</button><button id="bulkDownload" style="display:none" disabled="disabled">Download ZIP</button></div></div><button id="resetBtn" class="purple-btn">Reset</button><div id="images-container" class="images-container"></div><div id="processed-images-container" class="images-container" style="display:none"><h3>Processed Files</h3></div><div style="position:absolute;left:-9999px;opacity:0;height:1px;overflow:hidden"><h1>Image Cleaner - Professional Metadata Remover and WebP Converter</h1><p>Best free no upload image cleaner tool to remove metadata from photos offline. Convert images to WebP format while stripping EXIF data, GPS coordinates, and camera information. Protect your privacy with our advanced offline image to webp converter that removes all hidden metadata from JPEG, PNG, and other image formats without uploading files to any server.</p><h2>Features of Our Image Metadata Remover:</h2><ul><li>Remove EXIF metadata from images completely</li><li>Convert image to webp format with high quality</li><li>Strip GPS location data from photos</li><li>Bulk image processing and conversion</li><li>Privacy-focused image cleaner tool</li><li>No upload required - process images locally offline</li><li>Client-side image processing without server upload</li><li>Offline image cleaner and webp converter</li><li>No file upload image metadata remover</li></ul><h3>Why Use Our Image to WebP Converter?</h3><p>Our image cleaner removes sensitive metadata including camera settings, GPS coordinates, timestamps, and device information. Convert your images to efficient WebP format while ensuring complete privacy protection. Perfect for photographers, bloggers, and privacy-conscious users who need a reliable metadata remover tool.</p></div><div class="security-note"><h3 onclick="togglePrivacyFeatures()" style="cursor:pointer">Privacy Protection Features ▼</h3><div id="privacyFeatures" style="max-height:0;overflow:hidden;transition:max-height .3s ease"><ul><li><strong>Complete Metadata Removal:</strong>Strip all EXIF data, GPS coordinates, and camera information</li><li><strong>PDF Metadata Cleaning:</strong>Remove document info fields and identifiers</li><li><strong>WebP Conversion:</strong>Convert images to efficient WebP format while cleaning metadata</li><li><strong>Filename Randomization:</strong>Prevents identification through naming patterns</li><li><strong>Pixel Noise Addition:</strong>Subtle alterations to break perceptual hash matching</li><li><strong>No Upload Required:</strong>All processing happens offline in your browser</li><li><strong>Client-Side Processing:</strong>Images never leave your device or get uploaded to servers</li></ul><p><strong>Perfect for privacy-conscious users:</strong>Clean image metadata without uploading files. Use with Tor/VPN for maximum anonymity.</p></div></div><canvas id="c" style="display:none"></canvas><script>const fileEl = document.getElementById('file');
 const convertBtn = document.getElementById('convert');
 
 
@@ -13,7 +13,7 @@ const nval = document.getElementById('nval');
 const maxwEl = document.getElementById('maxw');
 const autocropEl = document.getElementById('autocrop');
 const randomizeEl = document.getElementById('randomize');
-const keepExtensionEl = document.getElementById('keepExtension');
+const outputFormatEl = document.getElementById('outputFormat');
 const advancedBtn = document.getElementById('advancedBtn');
 const controlsEl = document.querySelector('.controls');
 
@@ -24,7 +24,7 @@ function loadSettings() {
   const maxWidth = sessionStorage.getItem('maxWidth');
   const autocrop = sessionStorage.getItem('autocrop') === 'true';
   const randomize = sessionStorage.getItem('randomize') === 'true';
-  const keepExtension = sessionStorage.getItem('keepExtension') === 'true';
+  const outputFormat = sessionStorage.getItem('outputFormat') || 'keep';
   const advancedOpen = sessionStorage.getItem('advancedOpen') === 'true';
   
   if (quality) { qualityEl.value = quality; qval.textContent = quality; }
@@ -32,7 +32,7 @@ function loadSettings() {
   if (maxWidth) maxwEl.value = maxWidth;
   if (autocrop) autocropEl.classList.add('active');
   if (randomize) randomizeEl.classList.add('active');
-  if (keepExtension) keepExtensionEl.classList.add('active');
+  outputFormatEl.value = outputFormat;
   if (advancedOpen) {
     controlsEl.classList.remove('collapsed');
     advancedBtn.textContent = 'Hide';
@@ -46,8 +46,18 @@ function saveSettings() {
   sessionStorage.setItem('maxWidth', maxwEl.value);
   sessionStorage.setItem('autocrop', autocropEl.classList.contains('active'));
   sessionStorage.setItem('randomize', randomizeEl.classList.contains('active'));
-  sessionStorage.setItem('keepExtension', keepExtensionEl.classList.contains('active'));
+  sessionStorage.setItem('outputFormat', outputFormatEl.value);
   sessionStorage.setItem('advancedOpen', !controlsEl.classList.contains('collapsed'));
+}
+
+function updateQualityState() {
+  const isKeepOriginal = outputFormatEl.value === 'keep';
+  qualityEl.disabled = isKeepOriginal;
+  if (isKeepOriginal) {
+    qualityEl.title = 'Quality is only used when converting to JPEG/WebP.';
+  } else {
+    qualityEl.removeAttribute('title');
+  }
 }
 
 // Advanced toggle
@@ -81,10 +91,8 @@ randomizeEl.addEventListener('click', () => {
   saveSettings();
 });
 
-keepExtensionEl.addEventListener('click', () => {
-  keepExtensionEl.classList.toggle('active');
-  saveSettings();
-});
+outputFormatEl.addEventListener('change', saveSettings);
+outputFormatEl.addEventListener('change', updateQualityState);
 
 // Reset session
 document.getElementById('resetBtn').addEventListener('click', () => {
@@ -94,10 +102,11 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
 // Load settings on page load
 loadSettings();
+updateQualityState();
 
 // Event listeners
 fileEl.addEventListener('change', e => {
-  const files = Array.from(e.target.files);
+  const files = Array.from(e.target.files).filter(isSupportedFile);
   if (files.length > 0) {
     // If we already have files, merge with new ones
     if (currentFiles.length > 0) {
@@ -107,6 +116,8 @@ fileEl.addEventListener('change', e => {
     }
     displayImages(currentFiles);
     enableButtons();
+  } else if (e.target.files.length > 0) {
+    alert('Please select image or PDF files.');
   }
 });
 
@@ -130,7 +141,7 @@ document.addEventListener('drop', e => {
   if (e.dataTransfer.files.length > 0) {
     e.preventDefault();
     document.body.classList.remove('drag-over');
-    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    const files = Array.from(e.dataTransfer.files).filter(isSupportedFile);
     if (files.length > 0) {
       if (currentFiles.length > 0) {
         currentFiles = [...currentFiles, ...files];
@@ -140,7 +151,7 @@ document.addEventListener('drop', e => {
       displayImages(currentFiles);
       enableButtons();
     } else {
-      alert('Please drop only image files.');
+      alert('Please drop only image or PDF files.');
     }
   }
   document.body.classList.remove('drag-over');
@@ -176,6 +187,22 @@ function formatFileSize(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+function isImageFile(file) {
+  return file.type && file.type.startsWith('image/');
+}
+
+function isPdfFile(file) {
+  return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+}
+
+function isSupportedFile(file) {
+  return isImageFile(file) || isPdfFile(file);
+}
+
+function getBaseName(fileName) {
+  return fileName.replace(/\.[^/.]+$/, '');
+}
+
 // Update display after file selection
 function displayImages(files) {
   const container = document.getElementById('images-container');
@@ -185,20 +212,33 @@ function displayImages(files) {
   files.forEach((file, index) => {
     const imageBox = document.createElement('div');
     imageBox.className = 'image-box';
-    imageBox.innerHTML = `
-      <div class="image-preview">
-        <img class="preview-image" alt="${file.name}">
-        <div class="image-info">
-          <span class="image-name">${file.name}</span>
-          <span class="image-size">${formatFileSize(file.size)}</span>
-        </div>
-      </div>
+
+    const preview = document.createElement('div');
+    preview.className = 'image-preview';
+
+    if (isImageFile(file)) {
+      const img = document.createElement('img');
+      img.className = 'preview-image';
+      img.alt = file.name;
+      const url = urlManager.create(file);
+      img.src = url;
+      preview.appendChild(img);
+    } else {
+      const icon = document.createElement('div');
+      icon.className = 'file-icon';
+      icon.textContent = 'PDF';
+      preview.appendChild(icon);
+    }
+
+    const info = document.createElement('div');
+    info.className = 'image-info';
+    info.innerHTML = `
+      <span class="image-name">${file.name}</span>
+      <span class="image-size">${formatFileSize(file.size)}</span>
     `;
-    
-    const img = imageBox.querySelector('img');
-    const url = urlManager.create(file);
-    img.src = url;
-    
+
+    preview.appendChild(info);
+    imageBox.appendChild(preview);
     container.appendChild(imageBox);
   });
   
@@ -206,10 +246,10 @@ function displayImages(files) {
   enableButtons();
 }
 
-// Display processed images
+// Display processed files
 function displayProcessedImages(results) {
   const container = document.getElementById('processed-images-container');
-  container.innerHTML = '<h3>Processed Images</h3><div class="processed-images-grid"></div>';
+  container.innerHTML = '<h3>Processed Files</h3><div class="processed-images-grid"></div>';
   container.style.display = 'block';
   
   const grid = container.querySelector('.processed-images-grid');
@@ -217,21 +257,34 @@ function displayProcessedImages(results) {
   results.forEach((result, index) => {
     const imageBox = document.createElement('div');
     imageBox.className = 'image-box processed';
-    imageBox.innerHTML = `
-      <div class="image-preview">
-        <img class="preview-image" alt="${result.filename}">
-        <div class="image-info">
-          <span class="image-name">${result.filename}</span>
-          <span class="image-size">${formatFileSize(result.blob.size)}</span>
-          <span class="processed-label">✓ Processed</span>
-        </div>
-      </div>
+
+    const preview = document.createElement('div');
+    preview.className = 'image-preview';
+
+    if (result.outputType && result.outputType.startsWith('image/')) {
+      const img = document.createElement('img');
+      img.className = 'preview-image';
+      img.alt = result.filename;
+      const url = urlManager.create(result.blob);
+      img.src = url;
+      preview.appendChild(img);
+    } else {
+      const icon = document.createElement('div');
+      icon.className = 'file-icon';
+      icon.textContent = result.outputType === 'application/pdf' ? 'PDF' : 'FILE';
+      preview.appendChild(icon);
+    }
+
+    const info = document.createElement('div');
+    info.className = 'image-info';
+    info.innerHTML = `
+      <span class="image-name">${result.filename}</span>
+      <span class="image-size">${formatFileSize(result.blob.size)}</span>
+      <span class="processed-label">✓ Processed</span>
     `;
-    
-    const img = imageBox.querySelector('img');
-    const url = urlManager.create(result.blob);
-    img.src = url;
-    
+
+    preview.appendChild(info);
+    imageBox.appendChild(preview);
     grid.appendChild(imageBox);
   });
 }
@@ -244,6 +297,66 @@ function loadImage(url) {
     img.onerror = rej;
     img.src = url;
   });
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result);
+    reader.onerror = rej;
+    reader.readAsDataURL(file);
+  });
+}
+
+function readFileAsArrayBuffer(file) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result);
+    reader.onerror = rej;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function dataUrlToBlob(dataUrl) {
+  const parts = dataUrl.split(',');
+  const match = parts[0].match(/:(.*?);/);
+  const mime = match ? match[1] : 'application/octet-stream';
+  const binary = atob(parts[1]);
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mime });
+}
+
+async function stripJpegMetadataLossless(file) {
+  if (!window.piexif) {
+    throw new Error('Piexif.js failed to load');
+  }
+  const dataUrl = await readFileAsDataUrl(file);
+  const cleanedDataUrl = window.piexif.remove(dataUrl);
+  return dataUrlToBlob(cleanedDataUrl);
+}
+
+async function processPdf(file) {
+  if (!window.PDFLib) {
+    throw new Error('PDF-lib failed to load');
+  }
+  const bytes = await readFileAsArrayBuffer(file);
+  const pdfDoc = await window.PDFLib.PDFDocument.load(bytes);
+
+  pdfDoc.setTitle('');
+  pdfDoc.setAuthor('');
+  pdfDoc.setSubject('');
+  pdfDoc.setCreator('');
+  pdfDoc.setProducer('');
+  pdfDoc.setKeywords([]);
+  pdfDoc.setCreationDate(new Date(0));
+  pdfDoc.setModificationDate(new Date(0));
+
+  const cleanedBytes = await pdfDoc.save({ useObjectStreams: true });
+  return { blob: new Blob([cleanedBytes], { type: 'application/pdf' }), outputType: 'application/pdf' };
 }
 
 // Apply noise to image data
@@ -261,6 +374,15 @@ function applyNoise(imageData, intensity) {
 
 // Process image and return blob
 async function processImage(file, opts) {
+  const outputFormat = opts.outputFormat || 'keep';
+  const isJpeg = file.type === 'image/jpeg';
+  const needsPixelEdit = opts.autocrop || opts.noise > 0 || (opts.maxWidth && opts.maxWidth > 0);
+
+  if (outputFormat === 'keep' && isJpeg && !needsPixelEdit) {
+    const blob = await stripJpegMetadataLossless(file);
+    return { blob, width: null, height: null, outputType: file.type };
+  }
+
   const url = URL.createObjectURL(file);
   const img = await loadImage(url);
   
@@ -279,7 +401,7 @@ async function processImage(file, opts) {
   
   // Draw image with optional crop
   const inset = opts.autocrop ? 2 : 0;
-  ctx.drawImage(img, inset, inset, img.width - inset*2, img.height - inset*2, 0, 0, width, height);
+  ctx.drawImage(img, inset, inset, img.width - inset * 2, img.height - inset * 2, 0, 0, width, height);
   
   // Apply noise if needed
   if (opts.noise > 0) {
@@ -288,7 +410,12 @@ async function processImage(file, opts) {
   }
   
   // Determine output format
-  const outputType = opts.keepExtension && file.type ? file.type : 'image/webp';
+  let outputType = outputFormat === 'keep' && file.type ? file.type : outputFormat;
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
+  if (!allowedTypes.includes(outputType)) {
+    outputType = 'image/png';
+  }
+
   const quality = outputType === 'image/jpeg' ? opts.quality : (outputType === 'image/webp' ? opts.quality : undefined);
   
   // Create blob
@@ -317,9 +444,10 @@ function getExtensionFromType(type) {
     'image/png': '.png',
     'image/webp': '.webp',
     'image/gif': '.gif',
-    'image/bmp': '.bmp'
+    'image/bmp': '.bmp',
+    'application/pdf': '.pdf'
   };
-  return extensions[type] || '.webp';
+  return extensions[type] || '.bin';
 }
 
 // Enable buttons when files are loaded
@@ -385,22 +513,31 @@ async function processBulk(files) {
       noise: parseFloat(noiseEl.value),
       maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
       autocrop: autocropEl.classList.contains('active'),
-      keepExtension: keepExtensionEl.classList.contains('active')
+      outputFormat: outputFormatEl.value
     };
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (!isSingle) btn.textContent = `Processing ${i + 1}/${files.length}...`;
-      
-      const result = await processImage(file, opts);
-      const extension = opts.keepExtension ? getExtensionFromType(result.outputType) : '.webp';
-      const filename = randomizeEl.classList.contains('active') ? randomFilename(extension) : `${file.name.split('.')[0]}${extension}`;
+
+      let result;
+      if (isPdfFile(file)) {
+        result = await processPdf(file);
+      } else if (isImageFile(file)) {
+        result = await processImage(file, opts);
+      } else {
+        throw new Error(`Unsupported file type: ${file.name}`);
+      }
+
+      const extension = getExtensionFromType(result.outputType);
+      const filename = randomizeEl.classList.contains('active') ? randomFilename(extension) : `${getBaseName(file.name)}${extension}`;
       
       processedResults.push({
         blob: result.blob,
         filename: filename,
         width: result.width,
-        height: result.height
+        height: result.height,
+        outputType: result.outputType
       });
     }
     
@@ -415,7 +552,7 @@ async function processBulk(files) {
     
   } catch (err) {
     console.error(err);
-    alert('Error processing images: ' + err.message);
+    alert('Error processing files: ' + err.message);
   } finally {
     btn.disabled = false;
     btn.textContent = isSingle ? 'Convert' : 'Bulk Convert';
@@ -431,7 +568,7 @@ document.getElementById('bulkConvert').addEventListener('click', async () => {
 // Bulk download ZIP button
 document.getElementById('bulkDownload').addEventListener('click', async () => {
   if (processedResults.length === 0) {
-    alert('Please convert images first');
+    alert('Please convert files first');
     return;
   }
   
@@ -470,7 +607,7 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
 // Convert button
 convertBtn.addEventListener('click', async () => {
   if (currentFiles.length === 0) {
-    alert('Please select an image first');
+    alert('Please select a file first');
     return;
   }
   await processBulk([currentFiles[0]]);
