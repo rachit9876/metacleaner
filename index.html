@@ -1,919 +1,1112 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Image Cleaner - Remove Metadata, Convert to WebP | Free Online Tool</title><meta name="description" content="Free no upload image cleaner tool. Remove EXIF metadata, convert images to WebP format offline. Strip GPS data and protect privacy - all processing happens locally in your browser without uploading files."><meta name="keywords" content="image cleaner, metadata remover, webp converter, exif remover, image to webp, remove gps data, privacy tool, image optimizer, no upload image cleaner, offline image processor, client side image converter"><meta name="robots" content="index, follow"><meta property="og:title" content="Image Cleaner - Remove Metadata & Convert to WebP"><meta property="og:description" content="Free tool to clean image metadata and convert to WebP. Remove EXIF, GPS data for privacy protection."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Image Cleaner - Metadata Remover & WebP Converter"><meta name="twitter:description" content="Clean image metadata and convert to WebP format. Privacy-focused image processing tool."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" as="style" onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript><link rel="stylesheet" href="style.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="assets/vendor/piexif.min.js"></script><script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script></head><body class="dark-theme"><h2>Image Cleaner</h2><p class="subtitle">No Upload • Strip Metadata • Images + PDFs • Optional Conversion</p><div class="container"><div class="row"><input id="file" type="file" accept="image/*,application/pdf" multiple="multiple"><div class="file-input-wrapper" onclick='document.getElementById("file").click()'>Choose Files or Drop Here</div></div><div class="controls collapsed"><div class="control-group"><label>Quality<span id="qval">0.80</span></label><input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.80"></div><div class="control-group"><label>Noise Level<span id="nval">0</span></label><input id="noise" type="range" min="0" max="3" step="0.1" value="0"></div><div class="control-group"><label>Resize Preset</label><select id="resizePreset"><option value="">Custom</option><option value="1080">Instagram (1080px)</option><option value="1200">Twitter (1200px)</option><option value="1920">Full HD (1920px)</option><option value="1280">HD (1280px)</option><option value="800">Web (800px)</option><option value="640">Thumbnail (640px)</option></select></div><div class="control-group"><label>Max Width (px)</label><input id="maxw" type="number" min="1" placeholder="Original size"></div><div class="control-group"><label>Transform</label><div class="transform-controls"><button type="button" class="transform-btn" id="rotateLeft" title="Rotate Left (90° CCW)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"/></svg></button><button type="button" class="transform-btn" id="rotateRight" title="Rotate Right (90° CW)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg></button><button type="button" class="transform-btn" id="flipH" title="Flip Horizontal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M16 7l4 5-4 5M8 7l-4 5 4 5"/></svg></button><button type="button" class="transform-btn" id="flipV" title="Flip Vertical"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M7 8l5-4 5 4M7 16l5 4 5-4"/></svg></button></div></div><div class="control-group"><label>Tight crop (2px)</label><div class="toggle" id="autocrop"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Randomize filename</label><div class="toggle" id="randomize"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Output format</label><select id="outputFormat"><option value="keep" selected>Keep original</option><option value="image/webp">WebP</option><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select></div></div><div class="row"><button id="advancedBtn">Advanced</button><button id="convert" disabled="disabled">Convert</button><button id="download" style="display:none" disabled="disabled">Download</button><button id="bulkConvert" style="display:none" disabled="disabled">Bulk Convert</button><button id="bulkDownload" style="display:none" disabled="disabled">Download ZIP</button></div><div class="progress-container" id="progressContainer"><div class="progress-bar" id="progressBar"></div></div><div class="progress-text" id="progressText" style="display:none"></div></div><button id="resetBtn" class="purple-btn">Reset</button><div class="shortcuts-hint"><kbd>Ctrl</kbd>+<kbd>O</kbd> Open · <kbd>Enter</kbd> Convert · <kbd>Esc</kbd> Reset</div><div id="images-container" class="images-container"></div><div id="metadata-panel" class="metadata-panel"><h4>📋 Original Metadata</h4><div class="metadata-grid" id="metadataGrid"></div></div><div id="processed-images-container" class="images-container" style="display:none"><h3>Processed Files</h3></div><div style="position:absolute;left:-9999px;opacity:0;height:1px;overflow:hidden"><h1>Image Cleaner - Professional Metadata Remover and WebP Converter</h1><p>Best free no upload image cleaner tool to remove metadata from photos offline. Convert images to WebP format while stripping EXIF data, GPS coordinates, and camera information. Protect your privacy with our advanced offline image to webp converter that removes all hidden metadata from JPEG, PNG, and other image formats without uploading files to any server.</p><h2>Features of Our Image Metadata Remover:</h2><ul><li>Remove EXIF metadata from images completely</li><li>Convert image to webp format with high quality</li><li>Strip GPS location data from photos</li><li>Bulk image processing and conversion</li><li>Privacy-focused image cleaner tool</li><li>No upload required - process images locally offline</li><li>Client-side image processing without server upload</li><li>Offline image cleaner and webp converter</li><li>No file upload image metadata remover</li></ul><h3>Why Use Our Image to WebP Converter?</h3><p>Our image cleaner removes sensitive metadata including camera settings, GPS coordinates, timestamps, and device information. Convert your images to efficient WebP format while ensuring complete privacy protection. Perfect for photographers, bloggers, and privacy-conscious users who need a reliable metadata remover tool.</p></div><div class="security-note"><h3 onclick="togglePrivacyFeatures()" style="cursor:pointer">Privacy Protection Features ▼</h3><div id="privacyFeatures" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)"><ul><li><strong>Complete Metadata Removal:</strong>Strip all EXIF data, GPS coordinates, and camera information</li><li><strong>PDF Metadata Cleaning:</strong>Remove document info fields and identifiers</li><li><strong>WebP Conversion:</strong>Convert images to efficient WebP format while cleaning metadata</li><li><strong>Filename Randomization:</strong>Prevents identification through naming patterns</li><li><strong>Pixel Noise Addition:</strong>Subtle alterations to break perceptual hash matching</li><li><strong>No Upload Required:</strong>All processing happens offline in your browser</li><li><strong>Client-Side Processing:</strong>Images never leave your device or get uploaded to servers</li></ul><p><strong>Perfect for privacy-conscious users:</strong>Clean image metadata without uploading files. Use with Tor/VPN for maximum anonymity.</p></div></div><canvas id="c" style="display:none"></canvas><script>const fileEl = document.getElementById('file');
-const convertBtn = document.getElementById('convert');
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Image Cleaner - Remove Metadata, Convert to WebP | Free Online Tool</title>
+  <meta name="description"
+    content="Free no upload image cleaner tool. Remove EXIF metadata, convert images to WebP format offline. Strip GPS data and protect privacy - all processing happens locally in your browser without uploading files.">
+  <meta name="keywords"
+    content="image cleaner, metadata remover, webp converter, exif remover, image to webp, remove gps data, privacy tool, image optimizer, no upload image cleaner, offline image processor, client side image converter">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Image Cleaner - Remove Metadata & Convert to WebP">
+  <meta property="og:description"
+    content="Free tool to clean image metadata and convert to WebP. Remove EXIF, GPS data for privacy protection.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Image Cleaner - Metadata Remover & WebP Converter">
+  <meta name="twitter:description"
+    content="Clean image metadata and convert to WebP format. Privacy-focused image processing tool.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    as="style" onload='this.onload=null,this.rel="stylesheet"'><noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="assets/vendor/piexif.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+
+<body class="dark-theme">
+  <h2>Image Cleaner</h2>
+  <p class="subtitle">No Upload • Strip Metadata • Images + PDFs • Optional Conversion</p>
+  <div class="container">
+    <div class="row"><input id="file" type="file" accept="image/*,application/pdf" multiple="multiple">
+      <div class="file-input-wrapper" onclick='document.getElementById("file").click()'>Choose Files or Drop Here</div>
+    </div>
+    <div class="controls collapsed">
+      <div class="control-group"><label>Quality<span id="qval">0.80</span></label><input id="quality" type="range"
+          min="0.05" max="1" step="0.05" value="0.80"></div>
+      <div class="control-group"><label>Noise Level<span id="nval">0</span></label><input id="noise" type="range"
+          min="0" max="3" step="0.1" value="0"></div>
+      <div class="control-group"><label>Resize Preset</label><select id="resizePreset">
+          <option value="">Custom</option>
+          <option value="1080">Instagram (1080px)</option>
+          <option value="1200">Twitter (1200px)</option>
+          <option value="1920">Full HD (1920px)</option>
+          <option value="1280">HD (1280px)</option>
+          <option value="800">Web (800px)</option>
+          <option value="640">Thumbnail (640px)</option>
+        </select></div>
+      <div class="control-group"><label>Max Width (px)</label><input id="maxw" type="number" min="1"
+          placeholder="Original size"></div>
+      <div class="control-group"><label>Transform</label>
+        <div class="transform-controls"><button type="button" class="transform-btn" id="rotateLeft"
+            title="Rotate Left (90° CCW)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38" />
+            </svg></button><button type="button" class="transform-btn" id="rotateRight"
+            title="Rotate Right (90° CW)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38" />
+            </svg></button><button type="button" class="transform-btn" id="flipH" title="Flip Horizontal"><svg
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3v18M16 7l4 5-4 5M8 7l-4 5 4 5" />
+            </svg></button><button type="button" class="transform-btn" id="flipV" title="Flip Vertical"><svg
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M7 8l5-4 5 4M7 16l5 4 5-4" />
+            </svg></button></div>
+      </div>
+      <div class="control-group"><label>Tight crop (2px)</label>
+        <div class="toggle" id="autocrop">
+          <div class="toggle-slider"></div>
+        </div>
+      </div>
+      <div class="control-group"><label>Randomize filename</label>
+        <div class="toggle" id="randomize">
+          <div class="toggle-slider"></div>
+        </div>
+      </div>
+      <div class="control-group"><label>Output format</label><select id="outputFormat">
+          <option value="keep" selected>Keep original</option>
+          <option value="image/webp">WebP</option>
+          <option value="image/png">PNG</option>
+          <option value="image/jpeg">JPEG</option>
+        </select></div>
+    </div>
+    <div class="row"><button id="advancedBtn">Advanced</button><button id="convert"
+        disabled="disabled">Convert</button><button id="download" style="display:none"
+        disabled="disabled">Download</button><button id="bulkConvert" style="display:none" disabled="disabled">Bulk
+        Convert</button><button id="bulkDownload" style="display:none" disabled="disabled">Download ZIP</button></div>
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-text" id="progressText" style="display:none"></div>
+  </div><button id="resetBtn" class="purple-btn">Reset</button>
+  <div class="shortcuts-hint"><kbd>Ctrl</kbd>+<kbd>O</kbd> Open · <kbd>Enter</kbd> Convert · <kbd>Esc</kbd> Reset</div>
+  <div id="images-container" class="images-container"></div>
+  <div id="metadata-panel" class="metadata-panel">
+    <h4>📋 Original Metadata</h4>
+    <div class="metadata-grid" id="metadataGrid"></div>
+  </div>
+  <div id="processed-images-container" class="images-container" style="display:none">
+    <h3>Processed Files</h3>
+  </div>
+  <div style="position:absolute;left:-9999px;opacity:0;height:1px;overflow:hidden">
+    <h1>Image Cleaner - Professional Metadata Remover and WebP Converter</h1>
+    <p>Best free no upload image cleaner tool to remove metadata from photos offline. Convert images to WebP format
+      while stripping EXIF data, GPS coordinates, and camera information. Protect your privacy with our advanced offline
+      image to webp converter that removes all hidden metadata from JPEG, PNG, and other image formats without uploading
+      files to any server.</p>
+    <h2>Features of Our Image Metadata Remover:</h2>
+    <ul>
+      <li>Remove EXIF metadata from images completely</li>
+      <li>Convert image to webp format with high quality</li>
+      <li>Strip GPS location data from photos</li>
+      <li>Bulk image processing and conversion</li>
+      <li>Privacy-focused image cleaner tool</li>
+      <li>No upload required - process images locally offline</li>
+      <li>Client-side image processing without server upload</li>
+      <li>Offline image cleaner and webp converter</li>
+      <li>No file upload image metadata remover</li>
+    </ul>
+    <h3>Why Use Our Image to WebP Converter?</h3>
+    <p>Our image cleaner removes sensitive metadata including camera settings, GPS coordinates, timestamps, and device
+      information. Convert your images to efficient WebP format while ensuring complete privacy protection. Perfect for
+      photographers, bloggers, and privacy-conscious users who need a reliable metadata remover tool.</p>
+  </div>
+  <div class="security-note">
+    <h3 onclick="togglePrivacyFeatures()" style="cursor:pointer">Privacy Protection Features ▼</h3>
+    <div id="privacyFeatures"
+      style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)">
+      <ul>
+        <li><strong>Complete Metadata Removal:</strong>Strip all EXIF data, GPS coordinates, and camera information</li>
+        <li><strong>PDF Metadata Cleaning:</strong>Remove document info fields and identifiers</li>
+        <li><strong>WebP Conversion:</strong>Convert images to efficient WebP format while cleaning metadata</li>
+        <li><strong>Filename Randomization:</strong>Prevents identification through naming patterns</li>
+        <li><strong>Pixel Noise Addition:</strong>Subtle alterations to break perceptual hash matching</li>
+        <li><strong>No Upload Required:</strong>All processing happens offline in your browser</li>
+        <li><strong>Client-Side Processing:</strong>Images never leave your device or get uploaded to servers</li>
+      </ul>
+      <p><strong>Perfect for privacy-conscious users:</strong>Clean image metadata without uploading files. Use with
+        Tor/VPN for maximum anonymity.</p>
+    </div>
+  </div><canvas id="c" style="display:none"></canvas>
+  <script>const fileEl = document.getElementById('file');
+    const convertBtn = document.getElementById('convert');
 
 
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-// Controls
-const qualityEl = document.getElementById('quality');
-const qval = document.getElementById('qval');
-const noiseEl = document.getElementById('noise');
-const nval = document.getElementById('nval');
-const maxwEl = document.getElementById('maxw');
-const autocropEl = document.getElementById('autocrop');
-const randomizeEl = document.getElementById('randomize');
-const outputFormatEl = document.getElementById('outputFormat');
-const advancedBtn = document.getElementById('advancedBtn');
-const controlsEl = document.querySelector('.controls');
-const resizePresetEl = document.getElementById('resizePreset');
+    // Controls
+    const qualityEl = document.getElementById('quality');
+    const qval = document.getElementById('qval');
+    const noiseEl = document.getElementById('noise');
+    const nval = document.getElementById('nval');
+    const maxwEl = document.getElementById('maxw');
+    const autocropEl = document.getElementById('autocrop');
+    const randomizeEl = document.getElementById('randomize');
+    const outputFormatEl = document.getElementById('outputFormat');
+    const advancedBtn = document.getElementById('advancedBtn');
+    const controlsEl = document.querySelector('.controls');
+    const resizePresetEl = document.getElementById('resizePreset');
 
-// Transform state
-let transformState = { rotation: 0, flipH: false, flipV: false };
+    // Transform state
+    let transformState = { rotation: 0, flipH: false, flipV: false };
 
-// Load saved settings
-function loadSettings() {
-  const quality = sessionStorage.getItem('quality');
-  const noise = sessionStorage.getItem('noise');
-  const maxWidth = sessionStorage.getItem('maxWidth');
-  const autocrop = sessionStorage.getItem('autocrop') === 'true';
-  const randomize = sessionStorage.getItem('randomize') === 'true';
-  const outputFormat = sessionStorage.getItem('outputFormat') || 'keep';
-  const advancedOpen = sessionStorage.getItem('advancedOpen') === 'true';
-  
-  if (quality) { qualityEl.value = quality; qval.textContent = quality; }
-  if (noise) { noiseEl.value = noise; nval.textContent = noise; }
-  if (maxWidth) maxwEl.value = maxWidth;
-  if (autocrop) autocropEl.classList.add('active');
-  if (randomize) randomizeEl.classList.add('active');
-  outputFormatEl.value = outputFormat;
-  if (advancedOpen) {
-    controlsEl.classList.remove('collapsed');
-    advancedBtn.textContent = 'Hide';
-  }
-}
+    // Load saved settings
+    function loadSettings() {
+      const quality = sessionStorage.getItem('quality');
+      const noise = sessionStorage.getItem('noise');
+      const maxWidth = sessionStorage.getItem('maxWidth');
+      const autocrop = sessionStorage.getItem('autocrop') === 'true';
+      const randomize = sessionStorage.getItem('randomize') === 'true';
+      const outputFormat = sessionStorage.getItem('outputFormat') || 'keep';
+      const advancedOpen = sessionStorage.getItem('advancedOpen') === 'true';
 
-// Save settings
-function saveSettings() {
-  sessionStorage.setItem('quality', qualityEl.value);
-  sessionStorage.setItem('noise', noiseEl.value);
-  sessionStorage.setItem('maxWidth', maxwEl.value);
-  sessionStorage.setItem('autocrop', autocropEl.classList.contains('active'));
-  sessionStorage.setItem('randomize', randomizeEl.classList.contains('active'));
-  sessionStorage.setItem('outputFormat', outputFormatEl.value);
-  sessionStorage.setItem('advancedOpen', !controlsEl.classList.contains('collapsed'));
-}
-
-function updateQualityState() {
-  const isKeepOriginal = outputFormatEl.value === 'keep';
-  qualityEl.disabled = isKeepOriginal;
-  if (isKeepOriginal) {
-    qualityEl.title = 'Quality is only used when converting to JPEG/WebP.';
-  } else {
-    qualityEl.removeAttribute('title');
-  }
-}
-
-// Advanced toggle
-advancedBtn.addEventListener('click', () => {
-  const isCollapsed = controlsEl.classList.contains('collapsed');
-  controlsEl.classList.toggle('collapsed');
-  advancedBtn.textContent = isCollapsed ? 'Hide' : 'Advanced';
-  saveSettings();
-});
-
-// Resize preset handling
-resizePresetEl.addEventListener('change', () => {
-  const val = resizePresetEl.value;
-  if (val) {
-    maxwEl.value = val;
-  }
-  saveSettings();
-});
-
-maxwEl.addEventListener('input', () => {
-  resizePresetEl.value = '';
-  saveSettings();
-});
-
-// Transform controls
-document.getElementById('rotateLeft').addEventListener('click', () => {
-  transformState.rotation = (transformState.rotation - 90 + 360) % 360;
-  updateTransformPreview();
-});
-
-document.getElementById('rotateRight').addEventListener('click', () => {
-  transformState.rotation = (transformState.rotation + 90) % 360;
-  updateTransformPreview();
-});
-
-document.getElementById('flipH').addEventListener('click', () => {
-  transformState.flipH = !transformState.flipH;
-  updateTransformPreview();
-});
-
-document.getElementById('flipV').addEventListener('click', () => {
-  transformState.flipV = !transformState.flipV;
-  updateTransformPreview();
-});
-
-function updateTransformPreview() {
-  const previews = document.querySelectorAll('.image-preview img');
-  previews.forEach(img => {
-    let transform = '';
-    if (transformState.rotation !== 0) {
-      transform += `rotate(${transformState.rotation}deg) `;
+      if (quality) { qualityEl.value = quality; qval.textContent = quality; }
+      if (noise) { noiseEl.value = noise; nval.textContent = noise; }
+      if (maxWidth) maxwEl.value = maxWidth;
+      if (autocrop) autocropEl.classList.add('active');
+      if (randomize) randomizeEl.classList.add('active');
+      outputFormatEl.value = outputFormat;
+      if (advancedOpen) {
+        controlsEl.classList.remove('collapsed');
+        advancedBtn.textContent = 'Hide';
+      }
     }
-    if (transformState.flipH) {
-      transform += 'scaleX(-1) ';
+
+    // Save settings
+    function saveSettings() {
+      sessionStorage.setItem('quality', qualityEl.value);
+      sessionStorage.setItem('noise', noiseEl.value);
+      sessionStorage.setItem('maxWidth', maxwEl.value);
+      sessionStorage.setItem('autocrop', autocropEl.classList.contains('active'));
+      sessionStorage.setItem('randomize', randomizeEl.classList.contains('active'));
+      sessionStorage.setItem('outputFormat', outputFormatEl.value);
+      sessionStorage.setItem('advancedOpen', !controlsEl.classList.contains('collapsed'));
     }
-    if (transformState.flipV) {
-      transform += 'scaleY(-1) ';
-    }
-    img.style.transform = transform.trim();
-  });
-}
 
-function resetTransformState() {
-  transformState = { rotation: 0, flipH: false, flipV: false };
-}
-
-// Update value displays
-qval.textContent = qualityEl.value;
-qualityEl.oninput = () => { qval.textContent = qualityEl.value; saveSettings(); };
-nval.textContent = noiseEl.value;
-noiseEl.oninput = () => { nval.textContent = noiseEl.value; saveSettings(); };
-
-let currentFiles = [];
-
-
-// Toggle functionality
-autocropEl.addEventListener('click', () => {
-  autocropEl.classList.toggle('active');
-  saveSettings();
-});
-
-randomizeEl.addEventListener('click', () => {
-  randomizeEl.classList.toggle('active');
-  saveSettings();
-});
-
-outputFormatEl.addEventListener('change', saveSettings);
-outputFormatEl.addEventListener('change', updateQualityState);
-
-// Reset session
-document.getElementById('resetBtn').addEventListener('click', () => {
-  sessionStorage.clear();
-  location.reload();
-});
-
-// Load settings on page load
-loadSettings();
-updateQualityState();
-
-// Event listeners
-fileEl.addEventListener('change', e => {
-  const files = Array.from(e.target.files).filter(isSupportedFile);
-  if (files.length > 0) {
-    // If we already have files, merge with new ones
-    if (currentFiles.length > 0) {
-      currentFiles = [...currentFiles, ...files];
-    } else {
-      currentFiles = files;
-    }
-    resetTransformState();
-    displayImages(currentFiles);
-    extractMetadata(files[0]);
-    enableButtons();
-  } else if (e.target.files.length > 0) {
-    alert('Please select image or PDF files.');
-  }
-});
-
-
-
-// Page-wide drag and drop with animation
-document.addEventListener('dragover', e => {
-  if (e.dataTransfer.types.includes('Files')) {
-    e.preventDefault();
-    document.body.classList.add('drag-over');
-  }
-});
-
-document.addEventListener('dragleave', e => {
-  if (!e.relatedTarget) {
-    document.body.classList.remove('drag-over');
-  }
-});
-
-document.addEventListener('drop', e => {
-  if (e.dataTransfer.files.length > 0) {
-    e.preventDefault();
-    document.body.classList.remove('drag-over');
-    const files = Array.from(e.dataTransfer.files).filter(isSupportedFile);
-    if (files.length > 0) {
-      if (currentFiles.length > 0) {
-        currentFiles = [...currentFiles, ...files];
+    function updateQualityState() {
+      const isKeepOriginal = outputFormatEl.value === 'keep';
+      qualityEl.disabled = isKeepOriginal;
+      if (isKeepOriginal) {
+        qualityEl.title = 'Quality is only used when converting to JPEG/WebP.';
       } else {
-        currentFiles = files;
-      }
-      resetTransformState();
-      displayImages(currentFiles);
-      extractMetadata(files[0]);
-      enableButtons();
-    } else {
-      alert('Please drop only image or PDF files.');
-    }
-  }
-  document.body.classList.remove('drag-over');
-});
-
-// Clipboard paste
-document.addEventListener('paste', e => {
-  const items = e.clipboardData.items;
-  for (let i = 0; i < items.length; i++) {
-    if (items[i].type.startsWith('image/')) {
-      const f = items[i].getAsFile();
-      // If we already have files, add to existing array
-      if (currentFiles.length > 0) {
-        currentFiles = [...currentFiles, f];
-      } else {
-        currentFiles = [f];
-      }
-      resetTransformState();
-      displayImages(currentFiles);
-      extractMetadata(f);
-      enableButtons();
-      break;
-    }
-  }
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', e => {
-  // Ctrl+O or Cmd+O - Open file dialog
-  if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
-    e.preventDefault();
-    fileEl.click();
-  }
-  // Enter - Convert
-  if (e.key === 'Enter' && !e.target.matches('input, textarea, select')) {
-    e.preventDefault();
-    if (currentFiles.length > 1) {
-      document.getElementById('bulkConvert').click();
-    } else if (currentFiles.length === 1) {
-      convertBtn.click();
-    }
-  }
-  // Escape - Reset
-  if (e.key === 'Escape') {
-    document.getElementById('resetBtn').click();
-  }
-  // Ctrl+S or Cmd+S - Download
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    if (processedResults.length > 0) {
-      if (processedResults.length > 1) {
-        document.getElementById('bulkDownload').click();
-      } else {
-        document.getElementById('download').click();
+        qualityEl.removeAttribute('title');
       }
     }
-  }
-});
 
+    // Advanced toggle
+    advancedBtn.addEventListener('click', () => {
+      const isCollapsed = controlsEl.classList.contains('collapsed');
+      controlsEl.classList.toggle('collapsed');
+      advancedBtn.textContent = isCollapsed ? 'Hide' : 'Advanced';
+      saveSettings();
+    });
 
-// Format file size
-function formatFileSize(bytes) {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+    // Resize preset handling
+    resizePresetEl.addEventListener('change', () => {
+      const val = resizePresetEl.value;
+      if (val) {
+        maxwEl.value = val;
+      }
+      saveSettings();
+    });
 
-function isImageFile(file) {
-  return file.type && file.type.startsWith('image/');
-}
+    maxwEl.addEventListener('input', () => {
+      resizePresetEl.value = '';
+      saveSettings();
+    });
 
-function isPdfFile(file) {
-  return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-}
+    // Transform controls
+    document.getElementById('rotateLeft').addEventListener('click', () => {
+      transformState.rotation = (transformState.rotation - 90 + 360) % 360;
+      updateTransformPreview();
+    });
 
-function isSupportedFile(file) {
-  return isImageFile(file) || isPdfFile(file);
-}
+    document.getElementById('rotateRight').addEventListener('click', () => {
+      transformState.rotation = (transformState.rotation + 90) % 360;
+      updateTransformPreview();
+    });
 
-function getBaseName(fileName) {
-  return fileName.replace(/\.[^/.]+$/, '');
-}
+    document.getElementById('flipH').addEventListener('click', () => {
+      transformState.flipH = !transformState.flipH;
+      updateTransformPreview();
+    });
 
-// Extract and display metadata
-async function extractMetadata(file) {
-  const panel = document.getElementById('metadata-panel');
-  const grid = document.getElementById('metadataGrid');
-  
-  if (!isImageFile(file) || file.type !== 'image/jpeg') {
-    panel.classList.remove('visible');
-    return;
-  }
-  
-  try {
-    const dataUrl = await readFileAsDataUrl(file);
-    if (!window.piexif) {
-      panel.classList.remove('visible');
-      return;
+    document.getElementById('flipV').addEventListener('click', () => {
+      transformState.flipV = !transformState.flipV;
+      updateTransformPreview();
+    });
+
+    function updateTransformPreview() {
+      const previews = document.querySelectorAll('.image-preview img');
+      previews.forEach(img => {
+        let transform = '';
+        if (transformState.rotation !== 0) {
+          transform += `rotate(${transformState.rotation}deg) `;
+        }
+        if (transformState.flipH) {
+          transform += 'scaleX(-1) ';
+        }
+        if (transformState.flipV) {
+          transform += 'scaleY(-1) ';
+        }
+        img.style.transform = transform.trim();
+      });
     }
-    
-    const exifData = window.piexif.load(dataUrl);
-    const metadata = [];
-    
-    // Extract key metadata fields
-    if (exifData['0th']) {
-      if (exifData['0th'][piexif.ImageIFD.Make]) {
-        metadata.push({ key: 'Camera Make', value: exifData['0th'][piexif.ImageIFD.Make] });
-      }
-      if (exifData['0th'][piexif.ImageIFD.Model]) {
-        metadata.push({ key: 'Camera Model', value: exifData['0th'][piexif.ImageIFD.Model] });
-      }
-      if (exifData['0th'][piexif.ImageIFD.Software]) {
-        metadata.push({ key: 'Software', value: exifData['0th'][piexif.ImageIFD.Software] });
-      }
+
+    function resetTransformState() {
+      transformState = { rotation: 0, flipH: false, flipV: false };
     }
-    
-    if (exifData['Exif']) {
-      if (exifData['Exif'][piexif.ExifIFD.DateTimeOriginal]) {
-        metadata.push({ key: 'Date Taken', value: exifData['Exif'][piexif.ExifIFD.DateTimeOriginal] });
+
+    // Update value displays
+    qval.textContent = qualityEl.value;
+    qualityEl.oninput = () => { qval.textContent = qualityEl.value; saveSettings(); };
+    nval.textContent = noiseEl.value;
+    noiseEl.oninput = () => { nval.textContent = noiseEl.value; saveSettings(); };
+
+    let currentFiles = [];
+
+
+    // Toggle functionality
+    autocropEl.addEventListener('click', () => {
+      autocropEl.classList.toggle('active');
+      saveSettings();
+    });
+
+    randomizeEl.addEventListener('click', () => {
+      randomizeEl.classList.toggle('active');
+      saveSettings();
+    });
+
+    outputFormatEl.addEventListener('change', saveSettings);
+    outputFormatEl.addEventListener('change', updateQualityState);
+
+    // Reset session
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      sessionStorage.clear();
+      location.reload();
+    });
+
+    // Load settings on page load
+    loadSettings();
+    updateQualityState();
+
+    // Event listeners
+    fileEl.addEventListener('change', e => {
+      const files = Array.from(e.target.files).filter(isSupportedFile);
+      if (files.length > 0) {
+        // If we already have files, merge with new ones
+        if (currentFiles.length > 0) {
+          currentFiles = [...currentFiles, ...files];
+        } else {
+          currentFiles = files;
+        }
+        resetTransformState();
+        displayImages(currentFiles);
+        extractMetadata(files[0]);
+        enableButtons();
+      } else if (e.target.files.length > 0) {
+        alert('Please select image or PDF files.');
       }
-      if (exifData['Exif'][piexif.ExifIFD.ExposureTime]) {
-        const exp = exifData['Exif'][piexif.ExifIFD.ExposureTime];
-        metadata.push({ key: 'Exposure', value: `${exp[0]}/${exp[1]}s` });
+    });
+
+
+
+    // Page-wide drag and drop with animation
+    document.addEventListener('dragover', e => {
+      if (e.dataTransfer.types.includes('Files')) {
+        e.preventDefault();
+        document.body.classList.add('drag-over');
       }
-      if (exifData['Exif'][piexif.ExifIFD.FNumber]) {
-        const fn = exifData['Exif'][piexif.ExifIFD.FNumber];
-        metadata.push({ key: 'Aperture', value: `f/${(fn[0]/fn[1]).toFixed(1)}` });
+    });
+
+    document.addEventListener('dragleave', e => {
+      if (!e.relatedTarget) {
+        document.body.classList.remove('drag-over');
       }
-      if (exifData['Exif'][piexif.ExifIFD.ISOSpeedRatings]) {
-        metadata.push({ key: 'ISO', value: exifData['Exif'][piexif.ExifIFD.ISOSpeedRatings] });
+    });
+
+    document.addEventListener('drop', e => {
+      if (e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+        document.body.classList.remove('drag-over');
+        const files = Array.from(e.dataTransfer.files).filter(isSupportedFile);
+        if (files.length > 0) {
+          if (currentFiles.length > 0) {
+            currentFiles = [...currentFiles, ...files];
+          } else {
+            currentFiles = files;
+          }
+          resetTransformState();
+          displayImages(currentFiles);
+          extractMetadata(files[0]);
+          enableButtons();
+        } else {
+          alert('Please drop only image or PDF files.');
+        }
       }
+      document.body.classList.remove('drag-over');
+    });
+
+    // Clipboard paste
+    document.addEventListener('paste', e => {
+      const items = e.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith('image/')) {
+          const f = items[i].getAsFile();
+          // If we already have files, add to existing array
+          if (currentFiles.length > 0) {
+            currentFiles = [...currentFiles, f];
+          } else {
+            currentFiles = [f];
+          }
+          resetTransformState();
+          displayImages(currentFiles);
+          extractMetadata(f);
+          enableButtons();
+          break;
+        }
+      }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      // Ctrl+O or Cmd+O - Open file dialog
+      if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
+        e.preventDefault();
+        fileEl.click();
+      }
+      // Enter - Convert
+      if (e.key === 'Enter' && !e.target.matches('input, textarea, select')) {
+        e.preventDefault();
+        if (currentFiles.length > 1) {
+          document.getElementById('bulkConvert').click();
+        } else if (currentFiles.length === 1) {
+          convertBtn.click();
+        }
+      }
+      // Escape - Reset
+      if (e.key === 'Escape') {
+        document.getElementById('resetBtn').click();
+      }
+      // Ctrl+S or Cmd+S - Download
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        if (processedResults.length > 0) {
+          if (processedResults.length > 1) {
+            document.getElementById('bulkDownload').click();
+          } else {
+            document.getElementById('download').click();
+          }
+        }
+      }
+    });
+
+
+    // Format file size
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
-    
-    // GPS data (privacy sensitive!)
-    if (exifData['GPS'] && Object.keys(exifData['GPS']).length > 0) {
-      const hasLat = exifData['GPS'][piexif.GPSIFD.GPSLatitude];
-      const hasLon = exifData['GPS'][piexif.GPSIFD.GPSLongitude];
-      if (hasLat && hasLon) {
-        metadata.push({ key: '⚠️ GPS Location', value: 'Present (will be removed)', warning: true });
+
+    function isImageFile(file) {
+      return file.type && file.type.startsWith('image/');
+    }
+
+    function isPdfFile(file) {
+      return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    }
+
+    function isSupportedFile(file) {
+      return isImageFile(file) || isPdfFile(file);
+    }
+
+    function getBaseName(fileName) {
+      return fileName.replace(/\.[^/.]+$/, '');
+    }
+
+    // Extract and display metadata
+    async function extractMetadata(file) {
+      const panel = document.getElementById('metadata-panel');
+      const grid = document.getElementById('metadataGrid');
+
+      if (!isImageFile(file) || file.type !== 'image/jpeg') {
+        panel.classList.remove('visible');
+        return;
       }
-    }
-    
-    if (metadata.length === 0) {
-      panel.classList.remove('visible');
-      return;
-    }
-    
-    grid.innerHTML = metadata.map(item => `
+
+      try {
+        const dataUrl = await readFileAsDataUrl(file);
+        if (!window.piexif) {
+          panel.classList.remove('visible');
+          return;
+        }
+
+        const exifData = window.piexif.load(dataUrl);
+        const metadata = [];
+
+        // Extract key metadata fields
+        if (exifData['0th']) {
+          if (exifData['0th'][piexif.ImageIFD.Make]) {
+            metadata.push({ key: 'Camera Make', value: exifData['0th'][piexif.ImageIFD.Make] });
+          }
+          if (exifData['0th'][piexif.ImageIFD.Model]) {
+            metadata.push({ key: 'Camera Model', value: exifData['0th'][piexif.ImageIFD.Model] });
+          }
+          if (exifData['0th'][piexif.ImageIFD.Software]) {
+            metadata.push({ key: 'Software', value: exifData['0th'][piexif.ImageIFD.Software] });
+          }
+        }
+
+        if (exifData['Exif']) {
+          if (exifData['Exif'][piexif.ExifIFD.DateTimeOriginal]) {
+            metadata.push({ key: 'Date Taken', value: exifData['Exif'][piexif.ExifIFD.DateTimeOriginal] });
+          }
+          if (exifData['Exif'][piexif.ExifIFD.ExposureTime]) {
+            const exp = exifData['Exif'][piexif.ExifIFD.ExposureTime];
+            metadata.push({ key: 'Exposure', value: `${exp[0]}/${exp[1]}s` });
+          }
+          if (exifData['Exif'][piexif.ExifIFD.FNumber]) {
+            const fn = exifData['Exif'][piexif.ExifIFD.FNumber];
+            metadata.push({ key: 'Aperture', value: `f/${(fn[0] / fn[1]).toFixed(1)}` });
+          }
+          if (exifData['Exif'][piexif.ExifIFD.ISOSpeedRatings]) {
+            metadata.push({ key: 'ISO', value: exifData['Exif'][piexif.ExifIFD.ISOSpeedRatings] });
+          }
+        }
+
+        // GPS data (privacy sensitive!)
+        if (exifData['GPS'] && Object.keys(exifData['GPS']).length > 0) {
+          const hasLat = exifData['GPS'][piexif.GPSIFD.GPSLatitude];
+          const hasLon = exifData['GPS'][piexif.GPSIFD.GPSLongitude];
+          if (hasLat && hasLon) {
+            metadata.push({ key: '⚠️ GPS Location', value: 'Present (will be removed)', warning: true });
+          }
+        }
+
+        if (metadata.length === 0) {
+          panel.classList.remove('visible');
+          return;
+        }
+
+        grid.innerHTML = metadata.map(item => `
       <div class="metadata-item">
         <span class="metadata-key">${item.key}</span>
         <span class="metadata-value${item.warning ? ' warning' : ''}">${item.value}</span>
       </div>
     `).join('');
-    
-    panel.classList.add('visible');
-    
-  } catch (err) {
-    console.log('Could not extract metadata:', err);
-    panel.classList.remove('visible');
-  }
-}
 
-// Update display after file selection
-function displayImages(files) {
-  const container = document.getElementById('images-container');
-  previewUrlManager.cleanup();
-  container.innerHTML = '';
-  container.style.justifyContent = files.length > 0 ? 'flex-start' : 'center';
-  
-  files.forEach((file, index) => {
-    const imageBox = document.createElement('div');
-    imageBox.className = 'image-box';
+        panel.classList.add('visible');
 
-    const preview = document.createElement('div');
-    preview.className = 'image-preview';
-
-    if (isImageFile(file)) {
-      const img = document.createElement('img');
-      img.className = 'preview-image';
-      img.alt = file.name;
-      const url = previewUrlManager.create(file);
-      img.src = url;
-      preview.appendChild(img);
-    } else {
-      const icon = document.createElement('div');
-      icon.className = 'file-icon';
-      icon.textContent = 'PDF';
-      preview.appendChild(icon);
+      } catch (err) {
+        console.log('Could not extract metadata:', err);
+        panel.classList.remove('visible');
+      }
     }
 
-    const info = document.createElement('div');
-    info.className = 'image-info';
-    info.innerHTML = `
+    // Update display after file selection
+    function displayImages(files) {
+      const container = document.getElementById('images-container');
+      previewUrlManager.cleanup();
+      container.innerHTML = '';
+      container.style.justifyContent = files.length > 0 ? 'flex-start' : 'center';
+
+      files.forEach((file, index) => {
+        const imageBox = document.createElement('div');
+        imageBox.className = 'image-box';
+
+        const preview = document.createElement('div');
+        preview.className = 'image-preview';
+
+        if (isImageFile(file)) {
+          const img = document.createElement('img');
+          img.className = 'preview-image';
+          img.alt = file.name;
+          const url = previewUrlManager.create(file);
+          img.src = url;
+          preview.appendChild(img);
+        } else {
+          const icon = document.createElement('div');
+          icon.className = 'file-icon';
+          icon.textContent = 'PDF';
+          preview.appendChild(icon);
+        }
+
+        const info = document.createElement('div');
+        info.className = 'image-info';
+        info.innerHTML = `
       <span class="image-name">${file.name}</span>
       <span class="image-size">${formatFileSize(file.size)}</span>
     `;
 
-    preview.appendChild(info);
-    imageBox.appendChild(preview);
-    container.appendChild(imageBox);
-  });
-  
-  updateBulkButton();
-  enableButtons();
-}
+        preview.appendChild(info);
+        imageBox.appendChild(preview);
+        container.appendChild(imageBox);
+      });
 
-// Display processed files
-function displayProcessedImages(results, originalSizes) {
-  const container = document.getElementById('processed-images-container');
-  container.innerHTML = '<h3>Processed Files</h3><div class="processed-images-grid"></div>';
-  container.style.display = 'block';
-  
-  const grid = container.querySelector('.processed-images-grid');
-  
-  results.forEach((result, index) => {
-    const imageBox = document.createElement('div');
-    imageBox.className = 'image-box processed';
-
-    const preview = document.createElement('div');
-    preview.className = 'image-preview';
-
-    if (result.outputType && result.outputType.startsWith('image/')) {
-      const img = document.createElement('img');
-      img.className = 'preview-image';
-      img.alt = result.filename;
-      const url = urlManager.create(result.blob);
-      img.src = url;
-      preview.appendChild(img);
-    } else {
-      const icon = document.createElement('div');
-      icon.className = 'file-icon';
-      icon.textContent = result.outputType === 'application/pdf' ? 'PDF' : 'FILE';
-      preview.appendChild(icon);
+      updateBulkButton();
+      enableButtons();
     }
 
-    // Calculate size savings
-    const originalSize = originalSizes[index] || result.blob.size;
-    const savedBytes = originalSize - result.blob.size;
-    const savedPercent = ((savedBytes / originalSize) * 100).toFixed(1);
-    
-    let savingsHtml = '';
-    if (savedBytes > 0) {
-      savingsHtml = `<span class="size-savings">↓ ${savedPercent}% smaller</span>`;
-    } else if (savedBytes < 0) {
-      savingsHtml = `<span class="size-savings increase">↑ ${Math.abs(savedPercent)}% larger</span>`;
-    }
+    // Display processed files
+    function displayProcessedImages(results, originalSizes) {
+      const container = document.getElementById('processed-images-container');
+      container.innerHTML = '<h3>Processed Files</h3><div class="processed-images-grid"></div>';
+      container.style.display = 'block';
 
-    const info = document.createElement('div');
-    info.className = 'image-info';
-    info.innerHTML = `
+      const grid = container.querySelector('.processed-images-grid');
+
+      results.forEach((result, index) => {
+        const imageBox = document.createElement('div');
+        imageBox.className = 'image-box processed';
+
+        const preview = document.createElement('div');
+        preview.className = 'image-preview';
+
+        if (result.outputType && result.outputType.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.className = 'preview-image';
+          img.alt = result.filename;
+          const url = urlManager.create(result.blob);
+          img.src = url;
+          preview.appendChild(img);
+        } else {
+          const icon = document.createElement('div');
+          icon.className = 'file-icon';
+          icon.textContent = result.outputType === 'application/pdf' ? 'PDF' : 'FILE';
+          preview.appendChild(icon);
+        }
+
+        // Calculate size savings
+        const originalSize = originalSizes[index] || result.blob.size;
+        const savedBytes = originalSize - result.blob.size;
+        const savedPercent = ((savedBytes / originalSize) * 100).toFixed(1);
+
+        let savingsHtml = '';
+        if (savedBytes > 0) {
+          savingsHtml = `<span class="size-savings">↓ ${savedPercent}% smaller</span>`;
+        } else if (savedBytes < 0) {
+          savingsHtml = `<span class="size-savings increase">↑ ${Math.abs(savedPercent)}% larger</span>`;
+        }
+
+        const info = document.createElement('div');
+        info.className = 'image-info';
+        info.innerHTML = `
       <span class="image-name">${result.filename}</span>
       <span class="image-size">${formatFileSize(result.blob.size)}</span>
       ${savingsHtml}
       <span class="processed-label">✓ Metadata Stripped</span>
     `;
 
-    preview.appendChild(info);
-    imageBox.appendChild(preview);
-    grid.appendChild(imageBox);
-  });
-  
-  // Hide metadata panel after processing
-  document.getElementById('metadata-panel').classList.remove('visible');
-}
+        preview.appendChild(info);
+        imageBox.appendChild(preview);
+        grid.appendChild(imageBox);
+      });
 
-// Load image
-function loadImage(url) {
-  return new Promise((res, rej) => {
-    const img = new Image();
-    img.onload = () => res(img);
-    img.onerror = rej;
-    img.src = url;
-  });
-}
+      // Hide metadata panel after processing
+      document.getElementById('metadata-panel').classList.remove('visible');
+    }
 
-function readFileAsDataUrl(file) {
-  return new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.onload = () => res(reader.result);
-    reader.onerror = rej;
-    reader.readAsDataURL(file);
-  });
-}
-
-function readFileAsArrayBuffer(file) {
-  return new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.onload = () => res(reader.result);
-    reader.onerror = rej;
-    reader.readAsArrayBuffer(file);
-  });
-}
-
-function dataUrlToBlob(dataUrl) {
-  const parts = dataUrl.split(',');
-  const match = parts[0].match(/:(.*?);/);
-  const mime = match ? match[1] : 'application/octet-stream';
-  const binary = atob(parts[1]);
-  const len = binary.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return new Blob([bytes], { type: mime });
-}
-
-async function stripJpegMetadataLossless(file) {
-  if (!window.piexif) {
-    throw new Error('Piexif.js failed to load');
-  }
-  const dataUrl = await readFileAsDataUrl(file);
-  const cleanedDataUrl = window.piexif.remove(dataUrl);
-  return dataUrlToBlob(cleanedDataUrl);
-}
-
-async function processPdf(file) {
-  if (!window.PDFLib) {
-    throw new Error('PDF-lib failed to load');
-  }
-  const bytes = await readFileAsArrayBuffer(file);
-  const pdfDoc = await window.PDFLib.PDFDocument.load(bytes);
-
-  pdfDoc.setTitle('');
-  pdfDoc.setAuthor('');
-  pdfDoc.setSubject('');
-  pdfDoc.setCreator('');
-  pdfDoc.setProducer('');
-  pdfDoc.setKeywords([]);
-  pdfDoc.setCreationDate(new Date(0));
-  pdfDoc.setModificationDate(new Date(0));
-
-  const cleanedBytes = await pdfDoc.save({ useObjectStreams: true });
-  return { blob: new Blob([cleanedBytes], { type: 'application/pdf' }), outputType: 'application/pdf' };
-}
-
-// Apply noise to image data
-function applyNoise(imageData, intensity) {
-  if (!intensity) return imageData;
-  const d = imageData.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const noise = (Math.random() * 2 - 1) * intensity;
-    d[i] = Math.max(0, Math.min(255, d[i] + noise));
-    d[i+1] = Math.max(0, Math.min(255, d[i+1] + noise));
-    d[i+2] = Math.max(0, Math.min(255, d[i+2] + noise));
-  }
-  return imageData;
-}
-
-// Process image and return blob
-async function processImage(file, opts) {
-  const outputFormat = opts.outputFormat || 'keep';
-  const isJpeg = file.type === 'image/jpeg';
-  const hasTransform = opts.rotation !== 0 || opts.flipH || opts.flipV;
-  const needsPixelEdit = opts.autocrop || opts.noise > 0 || (opts.maxWidth && opts.maxWidth > 0) || hasTransform;
-
-  if (outputFormat === 'keep' && isJpeg && !needsPixelEdit) {
-    const blob = await stripJpegMetadataLossless(file);
-    return { blob, width: null, height: null, outputType: file.type };
-  }
-
-  const url = URL.createObjectURL(file);
-  const img = await loadImage(url);
-  
-  // Calculate dimensions
-  let width = img.width;
-  let height = img.height;
-  
-  // Swap dimensions if rotated 90 or 270 degrees
-  const isRotated90 = opts.rotation === 90 || opts.rotation === 270;
-  if (isRotated90) {
-    [width, height] = [height, width];
-  }
-  
-  if (opts.maxWidth && opts.maxWidth < (isRotated90 ? height : width)) {
-    const originalDim = isRotated90 ? height : width;
-    const scale = opts.maxWidth / originalDim;
-    width = Math.round(width * scale);
-    height = Math.round(height * scale);
-  }
-  
-  // Set canvas size (final output dimensions)
-  canvas.width = width;
-  canvas.height = height;
-  
-  // Apply transforms
-  ctx.save();
-  ctx.translate(width / 2, height / 2);
-  
-  if (opts.rotation) {
-    ctx.rotate(opts.rotation * Math.PI / 180);
-  }
-  if (opts.flipH) {
-    ctx.scale(-1, 1);
-  }
-  if (opts.flipV) {
-    ctx.scale(1, -1);
-  }
-  
-  // Draw image with optional crop
-  const maxInset = Math.floor((Math.min(img.width, img.height) - 1) / 2);
-  const inset = opts.autocrop ? Math.min(2, Math.max(0, maxInset)) : 0;
-  
-  const drawWidth = isRotated90 ? height : width;
-  const drawHeight = isRotated90 ? width : height;
-  
-  ctx.drawImage(
-    img, 
-    inset, inset, 
-    img.width - inset * 2, img.height - inset * 2, 
-    -drawWidth / 2, -drawHeight / 2, 
-    drawWidth, drawHeight
-  );
-  
-  ctx.restore();
-  
-  // Apply noise if needed
-  if (opts.noise > 0) {
-    const imageData = ctx.getImageData(0, 0, width, height);
-    ctx.putImageData(applyNoise(imageData, opts.noise), 0, 0);
-  }
-  
-  // Determine output format
-  let outputType = outputFormat === 'keep' && file.type ? file.type : outputFormat;
-  const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
-  if (!allowedTypes.includes(outputType)) {
-    outputType = 'image/png';
-  }
-
-  const quality = outputType === 'image/jpeg' ? opts.quality : (outputType === 'image/webp' ? opts.quality : undefined);
-  
-  // Create blob
-  const blob = await new Promise(resolve => {
-    canvas.toBlob(resolve, outputType, quality);
-  });
-
-  if (!blob) {
-    throw new Error('Failed to encode image.');
-  }
-  
-  URL.revokeObjectURL(url);
-  return { blob, width, height, outputType };
-}
-
-// Generate random 6-character filename
-function randomFilename(extension = '.webp') {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result + extension;
-}
-
-// Get file extension from MIME type
-function getExtensionFromType(type) {
-  const extensions = {
-    'image/jpeg': '.jpg',
-    'image/png': '.png',
-    'image/webp': '.webp',
-    'image/gif': '.gif',
-    'image/bmp': '.bmp',
-    'application/pdf': '.pdf'
-  };
-  return extensions[type] || '.bin';
-}
-
-// Enable buttons when files are loaded
-function enableButtons() {
-  const convertBtn = document.getElementById('convert');
-  const bulkConvertBtn = document.getElementById('bulkConvert');
-  
-  convertBtn.disabled = false;
-  bulkConvertBtn.disabled = false;
-}
-
-// Show/hide buttons based on file count
-function updateBulkButton() {
-  const convertBtn = document.getElementById('convert');
-  const downloadBtn = document.getElementById('download');
-  const bulkConvertBtn = document.getElementById('bulkConvert');
-  const bulkDownloadBtn = document.getElementById('bulkDownload');
-  
-  if (currentFiles.length > 1) {
-    convertBtn.style.display = 'none';
-    downloadBtn.style.display = 'none';
-    bulkConvertBtn.style.display = 'inline-block';
-    bulkDownloadBtn.style.display = 'inline-block';
-  } else {
-    convertBtn.style.display = 'inline-block';
-    downloadBtn.style.display = 'none';
-    bulkConvertBtn.style.display = 'none';
-    bulkDownloadBtn.style.display = 'none';
-  }
-}
-
-let processedResults = [];
-let originalFileSizes = [];
-
-
-
-// URL manager to prevent memory leaks
-const previewUrlManager = {
-  urls: new Set(),
-  create(blob) {
-    const url = URL.createObjectURL(blob);
-    this.urls.add(url);
-    return url;
-  },
-  cleanup() {
-    this.urls.forEach(url => URL.revokeObjectURL(url));
-    this.urls.clear();
-  }
-};
-
-const urlManager = {
-  urls: new Set(),
-  create(blob) {
-    const url = URL.createObjectURL(blob);
-    this.urls.add(url);
-    return url;
-  },
-  cleanup() {
-    this.urls.forEach(url => URL.revokeObjectURL(url));
-    this.urls.clear();
-  }
-};
-
-// Progress bar functions
-function showProgress(current, total, filename) {
-  const progressContainer = document.getElementById('progressContainer');
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-  
-  progressContainer.classList.add('active');
-  progressText.style.display = 'block';
-  
-  const percent = (current / total) * 100;
-  progressBar.style.width = percent + '%';
-  progressText.textContent = `Processing ${current}/${total}: ${filename}`;
-}
-
-function hideProgress() {
-  const progressContainer = document.getElementById('progressContainer');
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-  
-  progressContainer.classList.remove('active');
-  progressText.style.display = 'none';
-  progressBar.style.width = '0%';
-}
-
-// Unified processing function
-async function processBulk(files) {
-  urlManager.cleanup();
-  const isSingle = files.length === 1;
-  const btn = isSingle ? convertBtn : document.getElementById('bulkConvert');
-  
-  btn.disabled = true;
-  btn.textContent = 'Processing...';
-  processedResults = [];
-  originalFileSizes = files.map(f => f.size);
-  
-  try {
-    const opts = {
-      quality: parseFloat(qualityEl.value),
-      noise: parseFloat(noiseEl.value),
-      maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
-      autocrop: autocropEl.classList.contains('active'),
-      outputFormat: outputFormatEl.value,
-      rotation: transformState.rotation,
-      flipH: transformState.flipH,
-      flipV: transformState.flipV
-    };
-    
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      showProgress(i + 1, files.length, file.name);
-
-      let result;
-      if (isPdfFile(file)) {
-        result = await processPdf(file);
-      } else if (isImageFile(file)) {
-        result = await processImage(file, opts);
-      } else {
-        throw new Error(`Unsupported file type: ${file.name}`);
-      }
-
-      const extension = getExtensionFromType(result.outputType);
-      const filename = randomizeEl.classList.contains('active') ? randomFilename(extension) : `${getBaseName(file.name)}${extension}`;
-      
-      processedResults.push({
-        blob: result.blob,
-        filename: filename,
-        width: result.width,
-        height: result.height,
-        outputType: result.outputType
+    // Load image
+    function loadImage(url) {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.onload = () => res(img);
+        img.onerror = rej;
+        img.src = url;
       });
     }
-    
-    hideProgress();
-    displayProcessedImages(processedResults, originalFileSizes);
-    
-    if (isSingle) {
-      document.getElementById('download').style.display = 'inline-block';
-      document.getElementById('download').disabled = false;
-    } else {
-      document.getElementById('bulkDownload').disabled = false;
+
+    function readFileAsDataUrl(file) {
+      return new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.onerror = rej;
+        reader.readAsDataURL(file);
+      });
     }
-    
-  } catch (err) {
-    console.error(err);
-    alert('Error processing files: ' + err.message);
-    hideProgress();
-  } finally {
-    btn.disabled = false;
-    btn.textContent = isSingle ? 'Convert' : 'Bulk Convert';
-  }
-}
 
-// Bulk convert button
-document.getElementById('bulkConvert').addEventListener('click', async () => {
-  if (currentFiles.length === 0) return;
-  await processBulk(currentFiles);
-});
+    function readFileAsArrayBuffer(file) {
+      return new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.onerror = rej;
+        reader.readAsArrayBuffer(file);
+      });
+    }
 
-// Bulk download ZIP button
-document.getElementById('bulkDownload').addEventListener('click', async () => {
-  if (processedResults.length === 0) {
-    alert('Please convert files first');
-    return;
-  }
-  
-  const downloadBtn = document.getElementById('bulkDownload');
-  downloadBtn.disabled = true;
-  downloadBtn.textContent = 'Creating ZIP...';
-  
-  try {
-    const zip = new JSZip();
-    
-    processedResults.forEach((result, index) => {
-      zip.file(result.filename, result.blob);
+    function dataUrlToBlob(dataUrl) {
+      const parts = dataUrl.split(',');
+      const match = parts[0].match(/:(.*?);/);
+      const mime = match ? match[1] : 'application/octet-stream';
+      const binary = atob(parts[1]);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new Blob([bytes], { type: mime });
+    }
+
+    async function stripJpegMetadataLossless(file) {
+      if (!window.piexif) {
+        throw new Error('Piexif.js failed to load');
+      }
+      const dataUrl = await readFileAsDataUrl(file);
+      const cleanedDataUrl = window.piexif.remove(dataUrl);
+      return dataUrlToBlob(cleanedDataUrl);
+    }
+
+    async function processPdf(file) {
+      if (!window.PDFLib) {
+        throw new Error('PDF-lib failed to load');
+      }
+      const bytes = await readFileAsArrayBuffer(file);
+      const pdfDoc = await window.PDFLib.PDFDocument.load(bytes);
+
+      pdfDoc.setTitle('');
+      pdfDoc.setAuthor('');
+      pdfDoc.setSubject('');
+      pdfDoc.setCreator('');
+      pdfDoc.setProducer('');
+      pdfDoc.setKeywords([]);
+      pdfDoc.setCreationDate(new Date(0));
+      pdfDoc.setModificationDate(new Date(0));
+
+      const cleanedBytes = await pdfDoc.save({ useObjectStreams: true });
+      return { blob: new Blob([cleanedBytes], { type: 'application/pdf' }), outputType: 'application/pdf' };
+    }
+
+    // Apply noise to image data
+    function applyNoise(imageData, intensity) {
+      if (!intensity) return imageData;
+      const d = imageData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const noise = (Math.random() * 2 - 1) * intensity;
+        d[i] = Math.max(0, Math.min(255, d[i] + noise));
+        d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + noise));
+        d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + noise));
+      }
+      return imageData;
+    }
+
+    // Get EXIF orientation from JPEG file
+    async function getExifOrientation(file) {
+      if (file.type !== 'image/jpeg' || !window.piexif) {
+        return 1; // Default orientation (no rotation)
+      }
+      try {
+        const dataUrl = await readFileAsDataUrl(file);
+        const exifData = window.piexif.load(dataUrl);
+        if (exifData['0th'] && exifData['0th'][piexif.ImageIFD.Orientation]) {
+          return exifData['0th'][piexif.ImageIFD.Orientation];
+        }
+      } catch (e) {
+        console.log('Could not read EXIF orientation:', e);
+      }
+      return 1;
+    }
+
+    // Convert EXIF orientation to rotation/flip values
+    // EXIF orientations: 1=normal, 2=flip-h, 3=180, 4=flip-v, 5=transpose, 6=90CW, 7=transverse, 8=90CCW
+    function getTransformFromOrientation(orientation) {
+      switch (orientation) {
+        case 2: return { rotation: 0, flipH: true, flipV: false };
+        case 3: return { rotation: 180, flipH: false, flipV: false };
+        case 4: return { rotation: 0, flipH: false, flipV: true };
+        case 5: return { rotation: 90, flipH: true, flipV: false };
+        case 6: return { rotation: 90, flipH: false, flipV: false };
+        case 7: return { rotation: 270, flipH: true, flipV: false };
+        case 8: return { rotation: 270, flipH: false, flipV: false };
+        default: return { rotation: 0, flipH: false, flipV: false };
+      }
+    }
+
+    // Process image and return blob
+    async function processImage(file, opts) {
+      const outputFormat = opts.outputFormat || 'keep';
+      const isJpeg = file.type === 'image/jpeg';
+      const hasUserTransform = opts.rotation !== 0 || opts.flipH || opts.flipV;
+      const needsPixelEdit = opts.autocrop || opts.noise > 0 || (opts.maxWidth && opts.maxWidth > 0) || hasUserTransform || outputFormat !== 'keep';
+
+      // For JPEG with keep format and no edits, use lossless stripping
+      if (outputFormat === 'keep' && isJpeg && !opts.autocrop && opts.noise === 0 && !opts.maxWidth && !hasUserTransform) {
+        const blob = await stripJpegMetadataLossless(file);
+        return { blob, width: null, height: null, outputType: file.type };
+      }
+
+      // Read EXIF orientation to correct image display
+      const exifOrientation = await getExifOrientation(file);
+      const exifTransform = getTransformFromOrientation(exifOrientation);
+
+      // Combine EXIF correction with user transforms
+      // User transforms are applied AFTER EXIF correction
+      let totalRotation = (exifTransform.rotation + opts.rotation) % 360;
+      let totalFlipH = exifTransform.flipH !== opts.flipH; // XOR for flips
+      let totalFlipV = exifTransform.flipV !== opts.flipV;
+
+      const url = URL.createObjectURL(file);
+      const img = await loadImage(url);
+
+      // Calculate dimensions - use raw image dimensions
+      let srcWidth = img.width;
+      let srcHeight = img.height;
+
+      // Determine if final output is rotated 90/270 from source
+      const isRotated90 = totalRotation === 90 || totalRotation === 270;
+      let width = isRotated90 ? srcHeight : srcWidth;
+      let height = isRotated90 ? srcWidth : srcHeight;
+
+      // Apply max width scaling
+      if (opts.maxWidth && opts.maxWidth < width) {
+        const scale = opts.maxWidth / width;
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+
+      // Set canvas size (final output dimensions)
+      canvas.width = width;
+      canvas.height = height;
+
+      // Apply transforms
+      ctx.save();
+      ctx.translate(width / 2, height / 2);
+
+      if (totalRotation) {
+        ctx.rotate(totalRotation * Math.PI / 180);
+      }
+      if (totalFlipH) {
+        ctx.scale(-1, 1);
+      }
+      if (totalFlipV) {
+        ctx.scale(1, -1);
+      }
+
+      // Draw image with optional crop
+      const maxInset = Math.floor((Math.min(srcWidth, srcHeight) - 1) / 2);
+      const inset = opts.autocrop ? Math.min(2, Math.max(0, maxInset)) : 0;
+
+      // Calculate draw dimensions (before rotation)
+      const drawWidth = isRotated90 ? height : width;
+      const drawHeight = isRotated90 ? width : height;
+
+      ctx.drawImage(
+        img,
+        inset, inset,
+        srcWidth - inset * 2, srcHeight - inset * 2,
+        -drawWidth / 2, -drawHeight / 2,
+        drawWidth, drawHeight
+      );
+
+      ctx.restore();
+
+      // Apply noise if needed
+      if (opts.noise > 0) {
+        const imageData = ctx.getImageData(0, 0, width, height);
+        ctx.putImageData(applyNoise(imageData, opts.noise), 0, 0);
+      }
+
+      // Determine output format
+      let outputType = outputFormat === 'keep' && file.type ? file.type : outputFormat;
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
+      if (!allowedTypes.includes(outputType)) {
+        outputType = 'image/png';
+      }
+
+      const quality = outputType === 'image/jpeg' ? opts.quality : (outputType === 'image/webp' ? opts.quality : undefined);
+
+      // Create blob
+      const blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, outputType, quality);
+      });
+
+      if (!blob) {
+        throw new Error('Failed to encode image.');
+      }
+
+      URL.revokeObjectURL(url);
+      return { blob, width, height, outputType };
+    }
+
+    // Generate random 6-character filename
+    function randomFilename(extension = '.webp') {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result + extension;
+    }
+
+    // Get file extension from MIME type
+    function getExtensionFromType(type) {
+      const extensions = {
+        'image/jpeg': '.jpg',
+        'image/png': '.png',
+        'image/webp': '.webp',
+        'image/gif': '.gif',
+        'image/bmp': '.bmp',
+        'application/pdf': '.pdf'
+      };
+      return extensions[type] || '.bin';
+    }
+
+    // Enable buttons when files are loaded
+    function enableButtons() {
+      const convertBtn = document.getElementById('convert');
+      const bulkConvertBtn = document.getElementById('bulkConvert');
+
+      convertBtn.disabled = false;
+      bulkConvertBtn.disabled = false;
+    }
+
+    // Show/hide buttons based on file count
+    function updateBulkButton() {
+      const convertBtn = document.getElementById('convert');
+      const downloadBtn = document.getElementById('download');
+      const bulkConvertBtn = document.getElementById('bulkConvert');
+      const bulkDownloadBtn = document.getElementById('bulkDownload');
+
+      if (currentFiles.length > 1) {
+        convertBtn.style.display = 'none';
+        downloadBtn.style.display = 'none';
+        bulkConvertBtn.style.display = 'inline-block';
+        bulkDownloadBtn.style.display = 'inline-block';
+      } else {
+        convertBtn.style.display = 'inline-block';
+        downloadBtn.style.display = 'none';
+        bulkConvertBtn.style.display = 'none';
+        bulkDownloadBtn.style.display = 'none';
+      }
+    }
+
+    let processedResults = [];
+    let originalFileSizes = [];
+
+
+
+    // URL manager to prevent memory leaks
+    const previewUrlManager = {
+      urls: new Set(),
+      create(blob) {
+        const url = URL.createObjectURL(blob);
+        this.urls.add(url);
+        return url;
+      },
+      cleanup() {
+        this.urls.forEach(url => URL.revokeObjectURL(url));
+        this.urls.clear();
+      }
+    };
+
+    const urlManager = {
+      urls: new Set(),
+      create(blob) {
+        const url = URL.createObjectURL(blob);
+        this.urls.add(url);
+        return url;
+      },
+      cleanup() {
+        this.urls.forEach(url => URL.revokeObjectURL(url));
+        this.urls.clear();
+      }
+    };
+
+    // Progress bar functions
+    function showProgress(current, total, filename) {
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+
+      progressContainer.classList.add('active');
+      progressText.style.display = 'block';
+
+      const percent = (current / total) * 100;
+      progressBar.style.width = percent + '%';
+      progressText.textContent = `Processing ${current}/${total}: ${filename}`;
+    }
+
+    function hideProgress() {
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+
+      progressContainer.classList.remove('active');
+      progressText.style.display = 'none';
+      progressBar.style.width = '0%';
+    }
+
+    // Unified processing function
+    async function processBulk(files) {
+      urlManager.cleanup();
+      const isSingle = files.length === 1;
+      const btn = isSingle ? convertBtn : document.getElementById('bulkConvert');
+
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+      processedResults = [];
+      originalFileSizes = files.map(f => f.size);
+
+      try {
+        const opts = {
+          quality: parseFloat(qualityEl.value),
+          noise: parseFloat(noiseEl.value),
+          maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
+          autocrop: autocropEl.classList.contains('active'),
+          outputFormat: outputFormatEl.value,
+          rotation: transformState.rotation,
+          flipH: transformState.flipH,
+          flipV: transformState.flipV
+        };
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          showProgress(i + 1, files.length, file.name);
+
+          let result;
+          if (isPdfFile(file)) {
+            result = await processPdf(file);
+          } else if (isImageFile(file)) {
+            result = await processImage(file, opts);
+          } else {
+            throw new Error(`Unsupported file type: ${file.name}`);
+          }
+
+          const extension = getExtensionFromType(result.outputType);
+          const filename = randomizeEl.classList.contains('active') ? randomFilename(extension) : `${getBaseName(file.name)}${extension}`;
+
+          processedResults.push({
+            blob: result.blob,
+            filename: filename,
+            width: result.width,
+            height: result.height,
+            outputType: result.outputType
+          });
+        }
+
+        hideProgress();
+        displayProcessedImages(processedResults, originalFileSizes);
+
+        if (isSingle) {
+          document.getElementById('download').style.display = 'inline-block';
+          document.getElementById('download').disabled = false;
+        } else {
+          document.getElementById('bulkDownload').disabled = false;
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert('Error processing files: ' + err.message);
+        hideProgress();
+      } finally {
+        btn.disabled = false;
+        btn.textContent = isSingle ? 'Convert' : 'Bulk Convert';
+      }
+    }
+
+    // Bulk convert button
+    document.getElementById('bulkConvert').addEventListener('click', async () => {
+      if (currentFiles.length === 0) return;
+      await processBulk(currentFiles);
     });
-    
-    const zipBlob = await zip.generateAsync({type: 'blob'});
-    const zipUrl = URL.createObjectURL(zipBlob);
-    
-    const a = document.createElement('a');
-    a.href = zipUrl;
-    a.download = 'metacleaner.zip';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(zipUrl);
-    
-  } catch (err) {
-    console.error('Error creating ZIP:', err);
-    alert('Error creating ZIP file');
-  } finally {
-    downloadBtn.disabled = false;
-    downloadBtn.textContent = 'Download ZIP';
-  }
-});
 
-// Convert button
-convertBtn.addEventListener('click', async () => {
-  if (currentFiles.length === 0) {
-    alert('Please select a file first');
-    return;
-  }
-  await processBulk([currentFiles[0]]);
-});
+    // Bulk download ZIP button
+    document.getElementById('bulkDownload').addEventListener('click', async () => {
+      if (processedResults.length === 0) {
+        alert('Please convert files first');
+        return;
+      }
 
-// Download button
-document.getElementById('download').addEventListener('click', () => {
-  if (processedResults.length === 0) return;
-  const result = processedResults[0];
-  const dlUrl = URL.createObjectURL(result.blob);
-  const a = document.createElement('a');
-  a.href = dlUrl;
-  a.download = result.filename;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(dlUrl);
-});
+      const downloadBtn = document.getElementById('bulkDownload');
+      downloadBtn.disabled = true;
+      downloadBtn.textContent = 'Creating ZIP...';
 
-// Toggle privacy features
-function togglePrivacyFeatures() {
-  const features = document.getElementById('privacyFeatures');
-  const header = features.previousElementSibling;
-  const isOpen = features.style.maxHeight && features.style.maxHeight !== '0px';
-  
-  if (isOpen) {
-    features.style.maxHeight = '0px';
-    header.innerHTML = 'Privacy Protection Features ▼';
-  } else {
-    features.style.maxHeight = features.scrollHeight + 'px';
-    header.innerHTML = 'Privacy Protection Features ▲';
-  }
-}</script></body></html>
+      try {
+        const zip = new JSZip();
+
+        processedResults.forEach((result, index) => {
+          zip.file(result.filename, result.blob);
+        });
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const zipUrl = URL.createObjectURL(zipBlob);
+
+        const a = document.createElement('a');
+        a.href = zipUrl;
+        a.download = 'metacleaner.zip';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(zipUrl);
+
+      } catch (err) {
+        console.error('Error creating ZIP:', err);
+        alert('Error creating ZIP file');
+      } finally {
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = 'Download ZIP';
+      }
+    });
+
+    // Convert button
+    convertBtn.addEventListener('click', async () => {
+      if (currentFiles.length === 0) {
+        alert('Please select a file first');
+        return;
+      }
+      await processBulk([currentFiles[0]]);
+    });
+
+    // Download button
+    document.getElementById('download').addEventListener('click', () => {
+      if (processedResults.length === 0) return;
+      const result = processedResults[0];
+      const dlUrl = URL.createObjectURL(result.blob);
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = result.filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(dlUrl);
+    });
+
+    // Toggle privacy features
+    function togglePrivacyFeatures() {
+      const features = document.getElementById('privacyFeatures');
+      const header = features.previousElementSibling;
+      const isOpen = features.style.maxHeight && features.style.maxHeight !== '0px';
+
+      if (isOpen) {
+        features.style.maxHeight = '0px';
+        header.innerHTML = 'Privacy Protection Features ▼';
+      } else {
+        features.style.maxHeight = features.scrollHeight + 'px';
+        header.innerHTML = 'Privacy Protection Features ▲';
+      }
+    }</script>
+</body>
+
+</html>
