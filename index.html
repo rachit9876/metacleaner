@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Image Cleaner - Remove Metadata, Convert to WebP | Free Online Tool</title><meta name="description" content="Free no upload image cleaner tool. Remove EXIF metadata, convert images to WebP format offline. Strip GPS data and protect privacy - all processing happens locally in your browser without uploading files."><meta name="keywords" content="image cleaner, metadata remover, webp converter, exif remover, image to webp, remove gps data, privacy tool, image optimizer, no upload image cleaner, offline image processor, client side image converter"><meta name="robots" content="index, follow"><meta property="og:title" content="Image Cleaner - Remove Metadata & Convert to WebP"><meta property="og:description" content="Free tool to clean image metadata and convert to WebP. Remove EXIF, GPS data for privacy protection."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Image Cleaner - Metadata Remover & WebP Converter"><meta name="twitter:description" content="Clean image metadata and convert to WebP format. Privacy-focused image processing tool."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" as="style" onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript><link rel="stylesheet" href="style.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="assets/vendor/piexif.min.js"></script><script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script></head><body class="dark-theme"><h2>Image Cleaner</h2><p class="subtitle">No Upload • Strip Metadata • Images + PDFs • Optional Conversion</p><div class="container"><div class="row"><input id="file" type="file" accept="image/*,application/pdf" multiple="multiple"><div class="file-input-wrapper" onclick='document.getElementById("file").click()'>Choose Files or Drop Here</div></div><div class="controls collapsed"><div class="control-group"><label>Quality<span id="qval">0.80</span></label><input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.80"></div><div class="control-group"><label>Noise Level<span id="nval">0</span></label><input id="noise" type="range" min="0" max="3" step="0.1" value="0"></div><div class="control-group"><label>Max Width (px)</label><input id="maxw" type="number" min="1" placeholder="Original size"></div><div class="control-group"><label>Tight crop (2px)</label><div class="toggle" id="autocrop"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Randomize filename</label><div class="toggle" id="randomize"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Output format</label><select id="outputFormat"><option value="keep" selected>Keep original</option><option value="image/webp">WebP</option><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select></div></div><div class="row"><button id="advancedBtn">Advanced</button><button id="convert" disabled="disabled">Convert</button><button id="download" style="display:none" disabled="disabled">Download</button><button id="bulkConvert" style="display:none" disabled="disabled">Bulk Convert</button><button id="bulkDownload" style="display:none" disabled="disabled">Download ZIP</button></div></div><button id="resetBtn" class="purple-btn">Reset</button><div id="images-container" class="images-container"></div><div id="processed-images-container" class="images-container" style="display:none"><h3>Processed Files</h3></div><div style="position:absolute;left:-9999px;opacity:0;height:1px;overflow:hidden"><h1>Image Cleaner - Professional Metadata Remover and WebP Converter</h1><p>Best free no upload image cleaner tool to remove metadata from photos offline. Convert images to WebP format while stripping EXIF data, GPS coordinates, and camera information. Protect your privacy with our advanced offline image to webp converter that removes all hidden metadata from JPEG, PNG, and other image formats without uploading files to any server.</p><h2>Features of Our Image Metadata Remover:</h2><ul><li>Remove EXIF metadata from images completely</li><li>Convert image to webp format with high quality</li><li>Strip GPS location data from photos</li><li>Bulk image processing and conversion</li><li>Privacy-focused image cleaner tool</li><li>No upload required - process images locally offline</li><li>Client-side image processing without server upload</li><li>Offline image cleaner and webp converter</li><li>No file upload image metadata remover</li></ul><h3>Why Use Our Image to WebP Converter?</h3><p>Our image cleaner removes sensitive metadata including camera settings, GPS coordinates, timestamps, and device information. Convert your images to efficient WebP format while ensuring complete privacy protection. Perfect for photographers, bloggers, and privacy-conscious users who need a reliable metadata remover tool.</p></div><div class="security-note"><h3 onclick="togglePrivacyFeatures()" style="cursor:pointer">Privacy Protection Features ▼</h3><div id="privacyFeatures" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)"><ul><li><strong>Complete Metadata Removal:</strong>Strip all EXIF data, GPS coordinates, and camera information</li><li><strong>PDF Metadata Cleaning:</strong>Remove document info fields and identifiers</li><li><strong>WebP Conversion:</strong>Convert images to efficient WebP format while cleaning metadata</li><li><strong>Filename Randomization:</strong>Prevents identification through naming patterns</li><li><strong>Pixel Noise Addition:</strong>Subtle alterations to break perceptual hash matching</li><li><strong>No Upload Required:</strong>All processing happens offline in your browser</li><li><strong>Client-Side Processing:</strong>Images never leave your device or get uploaded to servers</li></ul><p><strong>Perfect for privacy-conscious users:</strong>Clean image metadata without uploading files. Use with Tor/VPN for maximum anonymity.</p></div></div><canvas id="c" style="display:none"></canvas><script>const fileEl = document.getElementById('file');
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Image Cleaner - Remove Metadata, Convert to WebP | Free Online Tool</title><meta name="description" content="Free no upload image cleaner tool. Remove EXIF metadata, convert images to WebP format offline. Strip GPS data and protect privacy - all processing happens locally in your browser without uploading files."><meta name="keywords" content="image cleaner, metadata remover, webp converter, exif remover, image to webp, remove gps data, privacy tool, image optimizer, no upload image cleaner, offline image processor, client side image converter"><meta name="robots" content="index, follow"><meta property="og:title" content="Image Cleaner - Remove Metadata & Convert to WebP"><meta property="og:description" content="Free tool to clean image metadata and convert to WebP. Remove EXIF, GPS data for privacy protection."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Image Cleaner - Metadata Remover & WebP Converter"><meta name="twitter:description" content="Clean image metadata and convert to WebP format. Privacy-focused image processing tool."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" as="style" onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript><link rel="stylesheet" href="style.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="assets/vendor/piexif.min.js"></script><script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script></head><body class="dark-theme"><h2>Image Cleaner</h2><p class="subtitle">No Upload • Strip Metadata • Images + PDFs • Optional Conversion</p><div class="container"><div class="row"><input id="file" type="file" accept="image/*,application/pdf" multiple="multiple"><div class="file-input-wrapper" onclick='document.getElementById("file").click()'>Choose Files or Drop Here</div></div><div class="controls collapsed"><div class="control-group"><label>Quality<span id="qval">0.80</span></label><input id="quality" type="range" min="0.05" max="1" step="0.05" value="0.80"></div><div class="control-group"><label>Noise Level<span id="nval">0</span></label><input id="noise" type="range" min="0" max="3" step="0.1" value="0"></div><div class="control-group"><label>Resize Preset</label><select id="resizePreset"><option value="">Custom</option><option value="1080">Instagram (1080px)</option><option value="1200">Twitter (1200px)</option><option value="1920">Full HD (1920px)</option><option value="1280">HD (1280px)</option><option value="800">Web (800px)</option><option value="640">Thumbnail (640px)</option></select></div><div class="control-group"><label>Max Width (px)</label><input id="maxw" type="number" min="1" placeholder="Original size"></div><div class="control-group"><label>Transform</label><div class="transform-controls"><button type="button" class="transform-btn" id="rotateLeft" title="Rotate Left (90° CCW)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"/></svg></button><button type="button" class="transform-btn" id="rotateRight" title="Rotate Right (90° CW)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg></button><button type="button" class="transform-btn" id="flipH" title="Flip Horizontal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M16 7l4 5-4 5M8 7l-4 5 4 5"/></svg></button><button type="button" class="transform-btn" id="flipV" title="Flip Vertical"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M7 8l5-4 5 4M7 16l5 4 5-4"/></svg></button></div></div><div class="control-group"><label>Tight crop (2px)</label><div class="toggle" id="autocrop"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Randomize filename</label><div class="toggle" id="randomize"><div class="toggle-slider"></div></div></div><div class="control-group"><label>Output format</label><select id="outputFormat"><option value="keep" selected>Keep original</option><option value="image/webp">WebP</option><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select></div></div><div class="row"><button id="advancedBtn">Advanced</button><button id="convert" disabled="disabled">Convert</button><button id="download" style="display:none" disabled="disabled">Download</button><button id="bulkConvert" style="display:none" disabled="disabled">Bulk Convert</button><button id="bulkDownload" style="display:none" disabled="disabled">Download ZIP</button></div><div class="progress-container" id="progressContainer"><div class="progress-bar" id="progressBar"></div></div><div class="progress-text" id="progressText" style="display:none"></div></div><button id="resetBtn" class="purple-btn">Reset</button><div class="shortcuts-hint"><kbd>Ctrl</kbd>+<kbd>O</kbd> Open · <kbd>Enter</kbd> Convert · <kbd>Esc</kbd> Reset</div><div id="images-container" class="images-container"></div><div id="metadata-panel" class="metadata-panel"><h4>📋 Original Metadata</h4><div class="metadata-grid" id="metadataGrid"></div></div><div id="processed-images-container" class="images-container" style="display:none"><h3>Processed Files</h3></div><div style="position:absolute;left:-9999px;opacity:0;height:1px;overflow:hidden"><h1>Image Cleaner - Professional Metadata Remover and WebP Converter</h1><p>Best free no upload image cleaner tool to remove metadata from photos offline. Convert images to WebP format while stripping EXIF data, GPS coordinates, and camera information. Protect your privacy with our advanced offline image to webp converter that removes all hidden metadata from JPEG, PNG, and other image formats without uploading files to any server.</p><h2>Features of Our Image Metadata Remover:</h2><ul><li>Remove EXIF metadata from images completely</li><li>Convert image to webp format with high quality</li><li>Strip GPS location data from photos</li><li>Bulk image processing and conversion</li><li>Privacy-focused image cleaner tool</li><li>No upload required - process images locally offline</li><li>Client-side image processing without server upload</li><li>Offline image cleaner and webp converter</li><li>No file upload image metadata remover</li></ul><h3>Why Use Our Image to WebP Converter?</h3><p>Our image cleaner removes sensitive metadata including camera settings, GPS coordinates, timestamps, and device information. Convert your images to efficient WebP format while ensuring complete privacy protection. Perfect for photographers, bloggers, and privacy-conscious users who need a reliable metadata remover tool.</p></div><div class="security-note"><h3 onclick="togglePrivacyFeatures()" style="cursor:pointer">Privacy Protection Features ▼</h3><div id="privacyFeatures" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)"><ul><li><strong>Complete Metadata Removal:</strong>Strip all EXIF data, GPS coordinates, and camera information</li><li><strong>PDF Metadata Cleaning:</strong>Remove document info fields and identifiers</li><li><strong>WebP Conversion:</strong>Convert images to efficient WebP format while cleaning metadata</li><li><strong>Filename Randomization:</strong>Prevents identification through naming patterns</li><li><strong>Pixel Noise Addition:</strong>Subtle alterations to break perceptual hash matching</li><li><strong>No Upload Required:</strong>All processing happens offline in your browser</li><li><strong>Client-Side Processing:</strong>Images never leave your device or get uploaded to servers</li></ul><p><strong>Perfect for privacy-conscious users:</strong>Clean image metadata without uploading files. Use with Tor/VPN for maximum anonymity.</p></div></div><canvas id="c" style="display:none"></canvas><script>const fileEl = document.getElementById('file');
 const convertBtn = document.getElementById('convert');
 
 
@@ -16,6 +16,10 @@ const randomizeEl = document.getElementById('randomize');
 const outputFormatEl = document.getElementById('outputFormat');
 const advancedBtn = document.getElementById('advancedBtn');
 const controlsEl = document.querySelector('.controls');
+const resizePresetEl = document.getElementById('resizePreset');
+
+// Transform state
+let transformState = { rotation: 0, flipH: false, flipV: false };
 
 // Load saved settings
 function loadSettings() {
@@ -68,14 +72,67 @@ advancedBtn.addEventListener('click', () => {
   saveSettings();
 });
 
+// Resize preset handling
+resizePresetEl.addEventListener('change', () => {
+  const val = resizePresetEl.value;
+  if (val) {
+    maxwEl.value = val;
+  }
+  saveSettings();
+});
 
+maxwEl.addEventListener('input', () => {
+  resizePresetEl.value = '';
+  saveSettings();
+});
+
+// Transform controls
+document.getElementById('rotateLeft').addEventListener('click', () => {
+  transformState.rotation = (transformState.rotation - 90 + 360) % 360;
+  updateTransformPreview();
+});
+
+document.getElementById('rotateRight').addEventListener('click', () => {
+  transformState.rotation = (transformState.rotation + 90) % 360;
+  updateTransformPreview();
+});
+
+document.getElementById('flipH').addEventListener('click', () => {
+  transformState.flipH = !transformState.flipH;
+  updateTransformPreview();
+});
+
+document.getElementById('flipV').addEventListener('click', () => {
+  transformState.flipV = !transformState.flipV;
+  updateTransformPreview();
+});
+
+function updateTransformPreview() {
+  const previews = document.querySelectorAll('.image-preview img');
+  previews.forEach(img => {
+    let transform = '';
+    if (transformState.rotation !== 0) {
+      transform += `rotate(${transformState.rotation}deg) `;
+    }
+    if (transformState.flipH) {
+      transform += 'scaleX(-1) ';
+    }
+    if (transformState.flipV) {
+      transform += 'scaleY(-1) ';
+    }
+    img.style.transform = transform.trim();
+  });
+}
+
+function resetTransformState() {
+  transformState = { rotation: 0, flipH: false, flipV: false };
+}
 
 // Update value displays
 qval.textContent = qualityEl.value;
 qualityEl.oninput = () => { qval.textContent = qualityEl.value; saveSettings(); };
 nval.textContent = noiseEl.value;
 noiseEl.oninput = () => { nval.textContent = noiseEl.value; saveSettings(); };
-maxwEl.oninput = saveSettings;
 
 let currentFiles = [];
 
@@ -114,7 +171,9 @@ fileEl.addEventListener('change', e => {
     } else {
       currentFiles = files;
     }
+    resetTransformState();
     displayImages(currentFiles);
+    extractMetadata(files[0]);
     enableButtons();
   } else if (e.target.files.length > 0) {
     alert('Please select image or PDF files.');
@@ -148,7 +207,9 @@ document.addEventListener('drop', e => {
       } else {
         currentFiles = files;
       }
+      resetTransformState();
       displayImages(currentFiles);
+      extractMetadata(files[0]);
       enableButtons();
     } else {
       alert('Please drop only image or PDF files.');
@@ -169,13 +230,47 @@ document.addEventListener('paste', e => {
       } else {
         currentFiles = [f];
       }
+      resetTransformState();
       displayImages(currentFiles);
+      extractMetadata(f);
       enableButtons();
       break;
     }
   }
 });
 
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  // Ctrl+O or Cmd+O - Open file dialog
+  if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
+    e.preventDefault();
+    fileEl.click();
+  }
+  // Enter - Convert
+  if (e.key === 'Enter' && !e.target.matches('input, textarea, select')) {
+    e.preventDefault();
+    if (currentFiles.length > 1) {
+      document.getElementById('bulkConvert').click();
+    } else if (currentFiles.length === 1) {
+      convertBtn.click();
+    }
+  }
+  // Escape - Reset
+  if (e.key === 'Escape') {
+    document.getElementById('resetBtn').click();
+  }
+  // Ctrl+S or Cmd+S - Download
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    if (processedResults.length > 0) {
+      if (processedResults.length > 1) {
+        document.getElementById('bulkDownload').click();
+      } else {
+        document.getElementById('download').click();
+      }
+    }
+  }
+});
 
 
 // Format file size
@@ -201,6 +296,85 @@ function isSupportedFile(file) {
 
 function getBaseName(fileName) {
   return fileName.replace(/\.[^/.]+$/, '');
+}
+
+// Extract and display metadata
+async function extractMetadata(file) {
+  const panel = document.getElementById('metadata-panel');
+  const grid = document.getElementById('metadataGrid');
+  
+  if (!isImageFile(file) || file.type !== 'image/jpeg') {
+    panel.classList.remove('visible');
+    return;
+  }
+  
+  try {
+    const dataUrl = await readFileAsDataUrl(file);
+    if (!window.piexif) {
+      panel.classList.remove('visible');
+      return;
+    }
+    
+    const exifData = window.piexif.load(dataUrl);
+    const metadata = [];
+    
+    // Extract key metadata fields
+    if (exifData['0th']) {
+      if (exifData['0th'][piexif.ImageIFD.Make]) {
+        metadata.push({ key: 'Camera Make', value: exifData['0th'][piexif.ImageIFD.Make] });
+      }
+      if (exifData['0th'][piexif.ImageIFD.Model]) {
+        metadata.push({ key: 'Camera Model', value: exifData['0th'][piexif.ImageIFD.Model] });
+      }
+      if (exifData['0th'][piexif.ImageIFD.Software]) {
+        metadata.push({ key: 'Software', value: exifData['0th'][piexif.ImageIFD.Software] });
+      }
+    }
+    
+    if (exifData['Exif']) {
+      if (exifData['Exif'][piexif.ExifIFD.DateTimeOriginal]) {
+        metadata.push({ key: 'Date Taken', value: exifData['Exif'][piexif.ExifIFD.DateTimeOriginal] });
+      }
+      if (exifData['Exif'][piexif.ExifIFD.ExposureTime]) {
+        const exp = exifData['Exif'][piexif.ExifIFD.ExposureTime];
+        metadata.push({ key: 'Exposure', value: `${exp[0]}/${exp[1]}s` });
+      }
+      if (exifData['Exif'][piexif.ExifIFD.FNumber]) {
+        const fn = exifData['Exif'][piexif.ExifIFD.FNumber];
+        metadata.push({ key: 'Aperture', value: `f/${(fn[0]/fn[1]).toFixed(1)}` });
+      }
+      if (exifData['Exif'][piexif.ExifIFD.ISOSpeedRatings]) {
+        metadata.push({ key: 'ISO', value: exifData['Exif'][piexif.ExifIFD.ISOSpeedRatings] });
+      }
+    }
+    
+    // GPS data (privacy sensitive!)
+    if (exifData['GPS'] && Object.keys(exifData['GPS']).length > 0) {
+      const hasLat = exifData['GPS'][piexif.GPSIFD.GPSLatitude];
+      const hasLon = exifData['GPS'][piexif.GPSIFD.GPSLongitude];
+      if (hasLat && hasLon) {
+        metadata.push({ key: '⚠️ GPS Location', value: 'Present (will be removed)', warning: true });
+      }
+    }
+    
+    if (metadata.length === 0) {
+      panel.classList.remove('visible');
+      return;
+    }
+    
+    grid.innerHTML = metadata.map(item => `
+      <div class="metadata-item">
+        <span class="metadata-key">${item.key}</span>
+        <span class="metadata-value${item.warning ? ' warning' : ''}">${item.value}</span>
+      </div>
+    `).join('');
+    
+    panel.classList.add('visible');
+    
+  } catch (err) {
+    console.log('Could not extract metadata:', err);
+    panel.classList.remove('visible');
+  }
 }
 
 // Update display after file selection
@@ -248,7 +422,7 @@ function displayImages(files) {
 }
 
 // Display processed files
-function displayProcessedImages(results) {
+function displayProcessedImages(results, originalSizes) {
   const container = document.getElementById('processed-images-container');
   container.innerHTML = '<h3>Processed Files</h3><div class="processed-images-grid"></div>';
   container.style.display = 'block';
@@ -276,18 +450,34 @@ function displayProcessedImages(results) {
       preview.appendChild(icon);
     }
 
+    // Calculate size savings
+    const originalSize = originalSizes[index] || result.blob.size;
+    const savedBytes = originalSize - result.blob.size;
+    const savedPercent = ((savedBytes / originalSize) * 100).toFixed(1);
+    
+    let savingsHtml = '';
+    if (savedBytes > 0) {
+      savingsHtml = `<span class="size-savings">↓ ${savedPercent}% smaller</span>`;
+    } else if (savedBytes < 0) {
+      savingsHtml = `<span class="size-savings increase">↑ ${Math.abs(savedPercent)}% larger</span>`;
+    }
+
     const info = document.createElement('div');
     info.className = 'image-info';
     info.innerHTML = `
       <span class="image-name">${result.filename}</span>
       <span class="image-size">${formatFileSize(result.blob.size)}</span>
-      <span class="processed-label">✓ Processed</span>
+      ${savingsHtml}
+      <span class="processed-label">✓ Metadata Stripped</span>
     `;
 
     preview.appendChild(info);
     imageBox.appendChild(preview);
     grid.appendChild(imageBox);
   });
+  
+  // Hide metadata panel after processing
+  document.getElementById('metadata-panel').classList.remove('visible');
 }
 
 // Load image
@@ -377,7 +567,8 @@ function applyNoise(imageData, intensity) {
 async function processImage(file, opts) {
   const outputFormat = opts.outputFormat || 'keep';
   const isJpeg = file.type === 'image/jpeg';
-  const needsPixelEdit = opts.autocrop || opts.noise > 0 || (opts.maxWidth && opts.maxWidth > 0);
+  const hasTransform = opts.rotation !== 0 || opts.flipH || opts.flipV;
+  const needsPixelEdit = opts.autocrop || opts.noise > 0 || (opts.maxWidth && opts.maxWidth > 0) || hasTransform;
 
   if (outputFormat === 'keep' && isJpeg && !needsPixelEdit) {
     const blob = await stripJpegMetadataLossless(file);
@@ -390,20 +581,54 @@ async function processImage(file, opts) {
   // Calculate dimensions
   let width = img.width;
   let height = img.height;
-  if (opts.maxWidth && opts.maxWidth < width) {
-    const scale = opts.maxWidth / width;
+  
+  // Swap dimensions if rotated 90 or 270 degrees
+  const isRotated90 = opts.rotation === 90 || opts.rotation === 270;
+  if (isRotated90) {
+    [width, height] = [height, width];
+  }
+  
+  if (opts.maxWidth && opts.maxWidth < (isRotated90 ? height : width)) {
+    const originalDim = isRotated90 ? height : width;
+    const scale = opts.maxWidth / originalDim;
     width = Math.round(width * scale);
     height = Math.round(height * scale);
   }
   
-  // Set canvas size
+  // Set canvas size (final output dimensions)
   canvas.width = width;
   canvas.height = height;
+  
+  // Apply transforms
+  ctx.save();
+  ctx.translate(width / 2, height / 2);
+  
+  if (opts.rotation) {
+    ctx.rotate(opts.rotation * Math.PI / 180);
+  }
+  if (opts.flipH) {
+    ctx.scale(-1, 1);
+  }
+  if (opts.flipV) {
+    ctx.scale(1, -1);
+  }
   
   // Draw image with optional crop
   const maxInset = Math.floor((Math.min(img.width, img.height) - 1) / 2);
   const inset = opts.autocrop ? Math.min(2, Math.max(0, maxInset)) : 0;
-  ctx.drawImage(img, inset, inset, img.width - inset * 2, img.height - inset * 2, 0, 0, width, height);
+  
+  const drawWidth = isRotated90 ? height : width;
+  const drawHeight = isRotated90 ? width : height;
+  
+  ctx.drawImage(
+    img, 
+    inset, inset, 
+    img.width - inset * 2, img.height - inset * 2, 
+    -drawWidth / 2, -drawHeight / 2, 
+    drawWidth, drawHeight
+  );
+  
+  ctx.restore();
   
   // Apply noise if needed
   if (opts.noise > 0) {
@@ -486,6 +711,7 @@ function updateBulkButton() {
 }
 
 let processedResults = [];
+let originalFileSizes = [];
 
 
 
@@ -516,6 +742,30 @@ const urlManager = {
   }
 };
 
+// Progress bar functions
+function showProgress(current, total, filename) {
+  const progressContainer = document.getElementById('progressContainer');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  
+  progressContainer.classList.add('active');
+  progressText.style.display = 'block';
+  
+  const percent = (current / total) * 100;
+  progressBar.style.width = percent + '%';
+  progressText.textContent = `Processing ${current}/${total}: ${filename}`;
+}
+
+function hideProgress() {
+  const progressContainer = document.getElementById('progressContainer');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  
+  progressContainer.classList.remove('active');
+  progressText.style.display = 'none';
+  progressBar.style.width = '0%';
+}
+
 // Unified processing function
 async function processBulk(files) {
   urlManager.cleanup();
@@ -525,6 +775,7 @@ async function processBulk(files) {
   btn.disabled = true;
   btn.textContent = 'Processing...';
   processedResults = [];
+  originalFileSizes = files.map(f => f.size);
   
   try {
     const opts = {
@@ -532,12 +783,15 @@ async function processBulk(files) {
       noise: parseFloat(noiseEl.value),
       maxWidth: maxwEl.value ? parseInt(maxwEl.value) : null,
       autocrop: autocropEl.classList.contains('active'),
-      outputFormat: outputFormatEl.value
+      outputFormat: outputFormatEl.value,
+      rotation: transformState.rotation,
+      flipH: transformState.flipH,
+      flipV: transformState.flipV
     };
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (!isSingle) btn.textContent = `Processing ${i + 1}/${files.length}...`;
+      showProgress(i + 1, files.length, file.name);
 
       let result;
       if (isPdfFile(file)) {
@@ -560,7 +814,8 @@ async function processBulk(files) {
       });
     }
     
-    displayProcessedImages(processedResults);
+    hideProgress();
+    displayProcessedImages(processedResults, originalFileSizes);
     
     if (isSingle) {
       document.getElementById('download').style.display = 'inline-block';
@@ -572,6 +827,7 @@ async function processBulk(files) {
   } catch (err) {
     console.error(err);
     alert('Error processing files: ' + err.message);
+    hideProgress();
   } finally {
     btn.disabled = false;
     btn.textContent = isSingle ? 'Convert' : 'Bulk Convert';
@@ -619,7 +875,7 @@ document.getElementById('bulkDownload').addEventListener('click', async () => {
     alert('Error creating ZIP file');
   } finally {
     downloadBtn.disabled = false;
-    downloadBtn.textContent = 'Bulk Download ZIP';
+    downloadBtn.textContent = 'Download ZIP';
   }
 });
 
